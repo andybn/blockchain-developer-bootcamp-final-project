@@ -8,22 +8,22 @@ I'm thinking about creating a stack-overflow similar platform to incentive devel
 
 In order to keep it simple the initial scope / user flows for the project would be:
 
-1) Create question
-2) Answer question
-3) Answer voting
+1. Create question
+2. Answer question
+3. Answer voting
 
 Depending on progress and deadline the scope could be expanded to support more use cases:
 
-1) Content tagging
-2) Add tips (tokens) to get a quick answer
-3) Reward users with badges modeled as NFTs (Non transferable) depending on user contributions and actions
-4) Enable more privileges in the system (Add comments, edit questions / answers etc) based on current tokens / badges
+4. Content tagging
+5. Add tips (tokens) to get a quick answer
+6. Reward users with badges modeled as NFTs (Non transferable) depending on user contributions and actions
+7. Enable more privileges in the system (Add comments, edit questions / answers etc) based on current tokens / badges
 
 
 Brainstorming / concerns:
 
-The site could be anonymous (without requiring KYC) only connecting the ETH wallet to simplify the scope or require registration to tie the user identity in the network.
-Build it on 2 layer solution to avoid high fees?
-Tokenomics. ICO. Token distribution. Single token?.
-Decentralized governance. Decision about new features, etc.
-...
+1. The site could be anonymous (without requiring KYC) only connecting the ETH wallet to simplify the scope or require registration to tie the user identity in the network.
+2. Build it on 2 layer solution to avoid high fees?
+3. Tokenomics. ICO. Token distribution. Single token?.
+4. Decentralized governance. Decision about new features, etc.
+5. ...
