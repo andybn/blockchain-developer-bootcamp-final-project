@@ -1,29 +1,33 @@
 
+# Bootcamp final project idea
 
-EXERCISE 1: Final project idea
+A dapp to share, organize and balance expenses with a group of people for an event or any collaborative activity (Similar to Tricount)
 
-I was looking for an idea which allows me to learn more about tokenization and how can incentive collaboration and knowledge sharing in a given community.
+## Advantages over centralized app (like TriCount,etc.):
 
-I'm thinking about creating a stack-overflow similar platform to incentive developers to post their programming questions, provide answers / solutions, vote for accepted answers, tag content, etc receiving reputation tokens as reward (let's name it KNL).
+* Settlement logic is set by code 
+* Expenses cannot be easily manipulated 
+* It is easy to audit and trace expenses / debts
+* Debts can be paid using ETH
 
-In order to keep it simple the initial scope / user flows for the project would be:
+## User stories
 
-1. Create question
-2. Answer question
-3. Answer voting
+In order to keep it simple for learning purposes the initial scope and user stories for the project could be:
 
-Depending on progress and deadline the scope could be expanded to support more use cases:
+1. As a creator I want to create a new shared activity (New contract with some customizable business rules)
+2. As a creator I want to add new user (participant)
+3. As a user I want to retrieve my current balance
+4. As a user I want to add a new expense
+5. As a user I want to approve expenses for other users
+6. As a user I want to be able to pay debts using ETH
+7. As a user I want to be able to able to withdraw my money
+....
 
-4. Content tagging
-5. Add tips (tokens) to get a quick answer
-6. Reward users with badges modeled as NFTs (Non transferable) depending on user contributions and actions
-7. Enable more privileges in the system (Add comments, edit questions / answers etc) based on current tokens / badges
+## Technical stack
 
-
-Brainstorming / concerns:
-
-1. The site could be anonymous (without requiring KYC) only connecting the ETH wallet to simplify the scope or require registration to tie the user identity in the network.
-2. Build it on 2 layer solution to avoid high fees?
-3. Tokenomics. ICO. Token distribution. Single token?.
-4. Decentralized governance. Decision about new features, etc.
-5. ...
+* Typescript
+* Angular
+* Solidity
+* Truffle
+* Web3
+* Metamask
