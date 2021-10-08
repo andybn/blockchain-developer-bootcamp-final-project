@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 /// @title ExpenseGroup smart contract allows to share and settle a group of expenses and track debts and credits.
 /// @author Andrés Buenestado
-contract ExpenseGroup {
-
+contract ExpenseGroup is Pausable {
+    /**
+    Max number of payees for a expense (Restriction to avoid high gas costs)
+    */
     uint8 constant MAX_PAYEES = 20;
 
     /**
@@ -42,9 +45,9 @@ contract ExpenseGroup {
         address payer;
         address payee;
     }
-    
+
     mapping(address => Member) public members;
-    
+
     address[] public memberAddresses;
 
     /// Allow the creation of the first member when the contract instance is created.
@@ -53,13 +56,13 @@ contract ExpenseGroup {
     /// A mapping of expense identifier and expense.
     uint256 public numExpenses;
     mapping(uint256 => Expense) public expenses;
-    
+
     Payment[] public payments;
 
     // A mapping of all the available withdrawals per address.
     mapping(address => uint256) public withdrawals;
-    
-    modifier restrictedToMember() {
+
+    modifier onlyMember() {
         require(
             msg.sender == members[msg.sender].memberAddress ||
                 !isContractInstanceCreated
@@ -67,7 +70,7 @@ contract ExpenseGroup {
         _;
     }
 
-    /// @notice Constructor. The creator of the smart contract will be the first member.    
+    /// @notice Constructor. The creator of the smart contract will be the first member.
     /// @param _name the name of the first member.
     constructor(string memory _name) {
         addMember(_name, msg.sender);
@@ -79,12 +82,13 @@ contract ExpenseGroup {
     /// @param _memberAddress the address of the member.
     function addMember(string memory _name, address _memberAddress)
         public
-        restrictedToMember
+        onlyMember
+        whenNotPaused
     {
         require(
             _memberAddress != members[_memberAddress].memberAddress ||
                 !isContractInstanceCreated
-        ); 
+        );
 
         require(_memberAddress != address(0));
 
@@ -111,13 +115,11 @@ contract ExpenseGroup {
         uint256 _amount,
         uint256 _valueDate,
         address[] memory _payees
-    ) public restrictedToMember {
-        address _payer = msg.sender;
+    ) public onlyMember whenNotPaused {
         require(_amount > 0);
         require(_payees.length > 0 && _payees.length <= MAX_PAYEES);
-        require(isMember(_payer));
-        require(areAllMembers(_payees));
-        require(areAllAddressesUnique(_payees));
+        require(_areAllMembers(_payees));
+        require(_areAllAddressesUnique(_payees));
 
         /// NOTE: Expense contains a mapping 'approvals' and data location needs to be storage.
         Expense storage expense = expenses[numExpenses++];
@@ -125,7 +127,7 @@ contract ExpenseGroup {
         expense.name = _title;
         expense.amount = _amount;
         expense.valueDate = _valueDate;
-        expense.payer = _payer;
+        expense.payer = msg.sender;
         expense.creationDate = block.timestamp;
         expense.payees = _payees;
     }
@@ -133,16 +135,20 @@ contract ExpenseGroup {
     /// @notice Set member's approval for an expense. Each member has 4 weeks to set its approval.
     /// @param _expenseId the identifier of the expense.
     /// @param _approved the approval of the member : true of false.
-    function approve(uint256 _expenseId, bool _approved) public restrictedToMember {
+    function approve(uint256 _expenseId, bool _approved)
+        public
+        onlyMember
+        whenNotPaused
+    {
         Expense storage expense = expenses[_expenseId];
         require(block.timestamp < expense.creationDate + 4 weeks);
         require(expense.approvals[msg.sender] != _approved);
 
         uint256 numberOfApprovalsBefore = getNumberOfApprovals(_expenseId);
-        
+
         /// If the number of approvals before the call is not 0, we revert the balance to the previous state without the expense.
         if (numberOfApprovalsBefore != 0) {
-            removeFromBalance(_expenseId);
+            _removeFromBalance(_expenseId);
         }
 
         /// Update the number of approvals
@@ -152,7 +158,7 @@ contract ExpenseGroup {
 
         /// If the number of approvals after is not 0, we syncrohonize the balance.
         if (numberOfApprovalsAfter != 0) {
-            addToBalance(_expenseId);
+            _addToBalance(_expenseId);
         }
     }
 
@@ -162,13 +168,13 @@ contract ExpenseGroup {
     function addPayment(string memory _title, address _payee)
         public
         payable
-        restrictedToMember
+        onlyMember
+        whenNotPaused
     {
         address _payer = msg.sender;
         require(msg.value > 0);
         require(_payee != _payer);
-        require(isMember(_payer));
-        require(isMember(_payee));
+        require(_isMember(_payee));
 
         Payment memory payment = Payment({
             title: _title,
@@ -180,11 +186,11 @@ contract ExpenseGroup {
 
         payments.push(payment);
         withdrawals[_payee] += msg.value;
-        synchronizeBalanceAfterPayment(payment);
+        _synchronizeBalanceAfterPayment(payment);
     }
 
     /// @notice Allow each user to withdraw its money from the smart contract
-    function withdraw() public restrictedToMember {
+    function withdraw() public onlyMember {
         require(withdrawals[msg.sender] > 0);
         uint256 amount = withdrawals[msg.sender];
         withdrawals[msg.sender] = 0;
@@ -200,7 +206,7 @@ contract ExpenseGroup {
         int256 max = members[memberAddresses[0]].balance;
         uint256 index = 0;
         for (uint256 i = 1; i < memberAddresses.length; i++) {
-            if (max != getMax(max, members[memberAddresses[i]].balance)) {
+            if (max != _getMax(max, members[memberAddresses[i]].balance)) {
                 max = members[memberAddresses[i]].balance;
                 index = i;
             }
@@ -210,7 +216,11 @@ contract ExpenseGroup {
 
     /// @notice Get withdrawal per address
     /// @return the available withdrawal for the member address
-    function getWithdrawal(address _memberAddress) public view returns (uint256) {
+    function getWithdrawal(address _memberAddress)
+        public
+        view
+        returns (uint256)
+    {
         return withdrawals[_memberAddress];
     }
 
@@ -265,7 +275,7 @@ contract ExpenseGroup {
     /// @notice Check if there is duplicate inside array.
     /// @param _list the list of address to check
     /// @return true if there is duplicate, false otherwise
-    function areAllAddressesUnique(address[] memory _list)
+    function _areAllAddressesUnique(address[] memory _list)
         internal
         pure
         returns (bool)
@@ -283,16 +293,20 @@ contract ExpenseGroup {
                 }
             }
         }
-        
+
         return true;
     }
 
     /// @notice Check if each address of the list is registered as member.
     /// @param _list the list of address to check
     /// @return true if all the list is registred as member, false otherwise
-    function areAllMembers(address[] memory _list) internal view returns (bool) {
+    function _areAllMembers(address[] memory _list)
+        internal
+        view
+        returns (bool)
+    {
         for (uint256 i = 0; i < _list.length; i++) {
-            if (!isMember(_list[i])) {
+            if (!_isMember(_list[i])) {
                 return false;
             }
         }
@@ -302,7 +316,7 @@ contract ExpenseGroup {
     /// @notice Check if each address of the list is registered as amember.
     /// @param _memberAddress the address to check
     /// @return true if all the list is registred as member, false otherwise
-    function isMember(address _memberAddress) internal view returns (bool) {
+    function _isMember(address _memberAddress) internal view returns (bool) {
         if (_memberAddress == members[_memberAddress].memberAddress) {
             return true;
         } else {
@@ -313,21 +327,21 @@ contract ExpenseGroup {
     /// @notice Add the expense amount to the balance if there is some approval
     /// @dev This function must be use if there is at list one approval in the expense
     /// @param expenseId the index of the expense
-    function addToBalance(uint256 expenseId) internal {
-        calculateBalance(expenseId, false);
+    function _addToBalance(uint256 expenseId) internal {
+        _calculateBalance(expenseId, false);
     }
 
     /// @notice Remove the expense amount from the balance if there is no approval
     /// @dev This function must not be use if there is zero approval
     /// @param expenseId the index of the expense
-    function removeFromBalance(uint256 expenseId) internal {
-        calculateBalance(expenseId, true);
+    function _removeFromBalance(uint256 expenseId) internal {
+        _calculateBalance(expenseId, true);
     }
 
     /// @notice Calculate the balance after each approval / unapproval.
     /// @param _expenseId the index of the expense
     /// @param _isRemoved indicate if the expense must be reverted or synchronized
-    function calculateBalance(uint256 _expenseId, bool _isRemoved) internal {
+    function _calculateBalance(uint256 _expenseId, bool _isRemoved) internal {
         uint256 contributors = getNumberOfApprovals(_expenseId);
         require(contributors > 0);
         Expense storage expense = expenses[_expenseId];
@@ -349,16 +363,16 @@ contract ExpenseGroup {
 
     /// @notice Calculate the state of the balance after each new payement.
     /// @param payment which will alter balance
-    function synchronizeBalanceAfterPayment(Payment memory payment) internal {
+    function _synchronizeBalanceAfterPayment(Payment memory payment) internal {
         members[payment.payee].balance -= int256(payment.amount);
         members[payment.payer].balance += int256(payment.amount);
     }
 
-    function getMax(int256 a, int256 b) internal pure returns (int256) {
+    function _getMax(int256 a, int256 b) internal pure returns (int256) {
         return a >= b ? a : b;
     }
 
-    function getMin(int256 a, int256 b) internal pure returns (int256) {
+    function _getMin(int256 a, int256 b) internal pure returns (int256) {
         return a < b ? a : b;
     }
 }
