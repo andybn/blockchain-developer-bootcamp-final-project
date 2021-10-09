@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 /// @title ExpenseGroup smart contract allows to share and settle a group of expenses and track debts and credits.
@@ -8,7 +8,7 @@ contract ExpenseGroup is Pausable {
     /**
     Max number of payees for a expense (Restriction to avoid high gas costs)
     */
-    uint8 constant MAX_PAYEES = 10;
+    uint8 constant MAX_PAYEES = 20;
 
     /**
     Member is a person or company which is part of current expense group.
@@ -77,6 +77,21 @@ contract ExpenseGroup is Pausable {
         isContractInstanceCreated = true;
     }
 
+    /// Event triggered when a new member is added
+    event MemberAdded(uint256 indexed _memberId);
+
+    /// Event triggered when a new expense is added
+    event ExpenseAdded(uint256 indexed _expenseId);
+    
+    /// Event triggered when an existing expense is approved
+    event ExpenseApproved(uint256 indexed _expenseId, bool _approved);
+    
+    /// Event triggered when a payment is made
+    event PaymentAdded(address indexed payer, address payee, uint256 amount);
+    
+    /// Event triggered when a withdrawal is made
+    event Withdrawal(address indexed member, uint256 amount);
+
     /// @notice Adds a member. Only registered member can add new members.
     /// @param _name the name or alias of the member.
     /// @param _memberAddress the address of the member.
@@ -102,6 +117,8 @@ contract ExpenseGroup is Pausable {
         memberAddresses.push(_memberAddress);
         member.identifier = memberAddresses.length - 1;
         members[_memberAddress] = member;
+
+        emit MemberAdded(member.identifier);
     }
 
     /// @notice Add an expense as payer. By default, the payer is the creator of the expense.
@@ -130,6 +147,8 @@ contract ExpenseGroup is Pausable {
         expense.payer = msg.sender;
         expense.creationDate = block.timestamp;
         expense.payees = _payees;
+
+        emit ExpenseAdded(numExpenses);
     }
 
     /// @notice Set member's approval for an expense. Each member has 4 weeks to set its approval.
@@ -160,6 +179,8 @@ contract ExpenseGroup is Pausable {
         if (numberOfApprovalsAfter != 0) {
             _addToBalance(_expenseId);
         }
+
+        emit ExpenseApproved(_expenseId, _approved);
     }
 
     /// @notice Create a Payment. Use this payable function send money to the smart contract.
@@ -187,6 +208,8 @@ contract ExpenseGroup is Pausable {
         payments.push(payment);
         withdrawals[_payee] += msg.value;
         _synchronizeBalanceAfterPayment(payment);
+
+        emit PaymentAdded(_payer, _payee, msg.value);
     }
 
     /// @notice Allow each user to withdraw its money from the smart contract
@@ -196,8 +219,9 @@ contract ExpenseGroup is Pausable {
         withdrawals[msg.sender] = 0;
 
         (bool success, ) = msg.sender.call{value: amount}("");
-
         require(success);
+
+        emit Withdrawal(msg.sender, amount);
     }
 
     /// @notice Get the max of all balances.
@@ -317,11 +341,7 @@ contract ExpenseGroup is Pausable {
     /// @param _memberAddress the address to check
     /// @return true if all the list is registred as member, false otherwise
     function _isMember(address _memberAddress) internal view returns (bool) {
-        if (_memberAddress == members[_memberAddress].memberAddress) {
-            return true;
-        } else {
-            return false;
-        }
+        return (_memberAddress == members[_memberAddress].memberAddress);
     }
 
     /// @notice Add the expense amount to the balance if there is some approval

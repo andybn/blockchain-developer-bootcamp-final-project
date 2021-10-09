@@ -10,7 +10,7 @@ contract('Expense group factory', (accounts) => {
 
   describe('ExpenseGroup creation', function () {
    
-    it('Should create a child ExpenseGroup contract', async function () {
+    it('Should succesfully create a ExpenseGroup contract instance', async function () {
       
       let eventEmitted = false;
 
@@ -18,17 +18,13 @@ contract('Expense group factory', (accounts) => {
       
       const expenseGroups = await factoryContractInstance.getExpenseGroups();
 
-      if (tx.logs[0].event == "ExpenseGroupCreated") {
-        eventEmitted = true;
-      }
-
-      const expenseGroup = await ExpenseGroup.at(expenseGroups[0]);            
+      //const expenseGroup = await ExpenseGroup.at(expenseGroups[0]);            
 
       //await expenseGroup.addMember('SenderB', accounts[1], { from: accounts[0] })            
 
       assert.equal(
-        eventEmitted,
-        true,
+        tx.logs[0].event,
+        "ExpenseGroupCreated",
         "Expense group created",
       );
 
