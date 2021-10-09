@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 /// @title ExpenseGroup smart contract allows to share and settle a group of expenses and track debts and credits.
 /// @author Andrés Buenestado
 contract ExpenseGroup is Pausable {
+    
     /**
     Max number of payees for a expense (Restriction to avoid high gas costs)
     */
@@ -66,6 +67,7 @@ contract ExpenseGroup is Pausable {
     /// A mapping of all the available withdrawals per address.
     mapping(address => uint256) public withdrawals;
 
+    /// Restricted to a member (or first constant instantiation)
     modifier onlyMember() {
         require(
             msg.sender == members[msg.sender].memberAddress ||
@@ -84,20 +86,29 @@ contract ExpenseGroup is Pausable {
         isContractInstanceCreated = true;
     }
 
-    /// Event triggered when a new member is added
+    /// @notice Event triggered when a new member is added
+    /// @param _memberId the identifier of the member.
     event MemberAdded(uint256 indexed _memberId);
 
-    /// Event triggered when a new expense is added
+    /// @notice Event triggered when a new expense is added
+    /// @param _expenseId the identifier of the expense.
     event ExpenseAdded(uint256 indexed _expenseId);
     
-    /// Event triggered when an existing expense is approved
+    /// @notice Event triggered when an existing expense is approved
+    /// @param _expenseId the identifier of the expense.
+    /// @param _approved approval (true) or disapproval (false)
     event ExpenseApproved(uint256 indexed _expenseId, bool _approved);
     
-    /// Event triggered when a payment is made
-    event PaymentAdded(address indexed payer, address payee, uint256 amount);
+    /// @notice Event triggered when a payment is made
+    /// @param _payer payer address.
+    /// @param _payee payee address
+    /// @param _amount amount paid
+    event PaymentAdded(address indexed _payer, address _payee, uint256 _amount);
     
-    /// Event triggered when a withdrawal is made
-    event Withdrawal(address indexed member, uint256 amount);
+    /// @notice Event triggered when a withdrawal is made    
+    /// @param _member member address.
+    /// @param _amount withdrawn amount    
+    event Withdrawal(address indexed _member, uint256 _amount);
 
     /// @notice Adds a member. Only registered member can add new members.
     /// @param _name the name or alias of the member.
