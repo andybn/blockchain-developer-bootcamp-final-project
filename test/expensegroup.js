@@ -23,12 +23,12 @@ contract('ExpenseGroup', (accounts) => {
   describe('Expense group core logic', function () {
 
     it('Should return correct original title', async function () {
-      let title = await contractInstance.title.call();
+      const title = await contractInstance.title.call();
       assert.equal(title, "WorldTrip");
     })
 
     it('First member should have his balance equals to 0', async function () {
-      let balance = await contractInstance.getBalance.call(SENDER_A);
+      const balance = await contractInstance.getBalance.call(SENDER_A);
       assert.equal(balance, 0);
     })
 
@@ -226,7 +226,7 @@ contract('ExpenseGroup', (accounts) => {
       expectedMaxBalance,
       expectedIndex,
     ) {
-      let max = await contractInstance.getMaxBalance.call({ from: _from });
+      const max = await contractInstance.getMaxBalance.call({ from: _from });
       assert.equal(
         max[0],
         expectedMaxBalance,
@@ -236,7 +236,7 @@ contract('ExpenseGroup', (accounts) => {
     }
 
     async function checkGetBalance(_from, memberAddress, expectedBalance) {
-      let balance = await contractInstance.getBalance.call(memberAddress, {
+      const balance = await contractInstance.getBalance.call(memberAddress, {
         from: _from,
       })
       assert.equal(balance.toNumber(), expectedBalance)
@@ -247,7 +247,7 @@ contract('ExpenseGroup', (accounts) => {
       memberAddress,
       expectedWithdrawal,
     ) {
-      let withdrawal = await contractInstance.getWithdrawal.call(
+      const withdrawal = await contractInstance.getWithdrawal.call(
         memberAddress,
         {
           from: _from,
@@ -258,7 +258,7 @@ contract('ExpenseGroup', (accounts) => {
     }
 
     async function checkGetExpense(_from, expenseId) {
-      let expense = await contractInstance.expenses.call(expenseId, {
+      const expense = await contractInstance.expenses.call(expenseId, {
         from: _from,
       });
 
@@ -271,7 +271,7 @@ contract('ExpenseGroup', (accounts) => {
       memberAddress,
       expectedApproval,
     ) {
-      let approval = await contractInstance.getApproval(
+      const approval = await contractInstance.getApproval(
         expenseId,
         memberAddress,
         {
