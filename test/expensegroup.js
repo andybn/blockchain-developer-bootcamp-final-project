@@ -16,11 +16,12 @@ contract('ExpenseGroup', (accounts) => {
   const payForABD = [SENDER_A, SENDER_B, SENDER_D]
   const payForABCD = [SENDER_A, SENDER_B, SENDER_C, SENDER_D]
 
-  before('Setup contract once before all the tests', async function () {
-    contractInstance = await ExpenseGroup.new('SenderA')
+  before('Setup contract once before all the tests', async function () { 
+    contractInstance = await ExpenseGroup.new(SENDER_A, 'SenderA')
   })
 
-  describe('Init members', function () {
+  describe('Expense group logic', function () {
+   
     it('First member should have his balance equal to 0', async function () {
       let balance = await contractInstance.getBalance.call(SENDER_A)
       assert.equal(balance, 0)
@@ -154,12 +155,12 @@ contract('ExpenseGroup', (accounts) => {
     })
 
     it('Should add a payment from B to A', async function () {
-      checkGetWithdrawal(SENDER_A, SENDER_A, 0)
+      await checkGetWithdrawal(SENDER_A, SENDER_A, 0)
       await contractInstance.addPayment('Payment1', SENDER_A, {
         from: SENDER_B,
         value: 1000,
       })
-      checkGetWithdrawal(SENDER_A, SENDER_A, 1000)
+      await checkGetWithdrawal(SENDER_A, SENDER_A, 1000)
       await checkGetBalance(SENDER_A, SENDER_A, 5667)
       await checkGetBalance(SENDER_A, SENDER_B, -2333)
     })
@@ -171,9 +172,9 @@ contract('ExpenseGroup', (accounts) => {
     })
 
     it('Should withdraw available money for A', async function () {
-      checkGetWithdrawal(SENDER_A, SENDER_A, 1000)
+      await checkGetWithdrawal(SENDER_A, SENDER_A, 1000)
       await contractInstance.withdraw({ from: SENDER_A })
-      checkGetWithdrawal(SENDER_A, SENDER_A, 0)
+      await checkGetWithdrawal(SENDER_A, SENDER_A, 0);
     })
 
     async function checkGetMaxBalance(
@@ -190,13 +191,13 @@ contract('ExpenseGroup', (accounts) => {
       assert.equal(max[1], expectedIndex)
     }
 
-    async function checkGetBalance(_from, waddress, expectedBalance) {
-      let balance = await contractInstance.getBalance.call(waddress, { from: _from })
+    async function checkGetBalance(_from, memberAddress, expectedBalance) {
+      let balance = await contractInstance.getBalance.call(memberAddress, { from: _from })
       assert.equal(balance.toNumber(), expectedBalance)
     }
 
-    async function checkGetWithdrawal(_from, waddress, expectedWithdrawal) {
-      let withdrawal = await contractInstance.getWithdrawal.call(waddress, {
+    async function checkGetWithdrawal(_from, memberAddress, expectedWithdrawal) {
+      let withdrawal = await contractInstance.getWithdrawal.call(memberAddress, {
         from: _from,
       })
       assert.equal(withdrawal.toNumber(), expectedWithdrawal)
@@ -211,10 +212,10 @@ contract('ExpenseGroup', (accounts) => {
     async function checkGetApproval(
       _from,
       expenseId,
-      waddress,
+      memberAddress,
       expectedApproval,
     ) {
-      let approval = await contractInstance.getApproval(expenseId, waddress, {
+      let approval = await contractInstance.getApproval(expenseId, memberAddress, {
         from: _from,
       })
       assert.equal(approval, expectedApproval)

@@ -17,7 +17,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -30,7 +31,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -1853,12 +1855,43 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xa28706a1E839FA883810744551C4c98Ab6b71856",
-      "transactionHash": "0xae27ff797e2de3d1562658c192b57319b876eb8432b949442caa0e1c8958695c"
+      "address": "0x3d5a3ef38E069e6e198Fa2F2685bf07e6e5681cb",
+      "transactionHash": "0x3238493b3592fdff7545a6c40be265dccb96c681bc51883df1aebe5eebffc00a"
+    },
+    "1633453808176": {
+      "events": {},
+      "links": {},
+      "address": "0xe1C38189220fCE443741D9b567c416a03D5D4297",
+      "transactionHash": "0x68ca9c34f6765a4ddde6a958691b168ec58dff9b882a6d9e99d048110746dd69"
+    },
+    "1633763855723": {
+      "events": {},
+      "links": {},
+      "address": "0xD6dCf87e379ec02C516374E3715A068B733AA417",
+      "transactionHash": "0xc3aa2e893573b784924c2959d03f7d9c90d6a1d99bbf63dc994d446dbddd25b3"
+    },
+    "1633767884288": {
+      "events": {},
+      "links": {},
+      "address": "0xdaA964617552fc2Ae0374C7531E8d2580CD871CD",
+      "transactionHash": "0x32ac9c865a5ea1175a1aba825cc3dfd63f163359a3f798d6a63c559599b23526"
+    },
+    "1633784870139": {
+      "events": {},
+      "links": {},
+      "address": "0x7606772B716370A0CD10Cbf3b8e8A069a908A60B",
+      "transactionHash": "0x22ed3536ce1eddd07935b2d141317024ea4d7f5e64fe391b0ba905299453ae41"
+    },
+    "1633791802533": {
+      "events": {},
+      "links": {},
+      "address": "0x88E7A42588Dfc01623A08bB89903d9506884306D",
+      "transactionHash": "0x3dd90e2d8014899cff033a2485493e74374bbf06bef661dc4fd935b5a9a26ab8"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-10-06T13:48:23.042Z",
+  "updatedAt": "2021-10-09T15:03:47.221Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

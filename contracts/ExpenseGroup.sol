@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 /// @title ExpenseGroup smart contract allows to share and settle a group of expenses and track debts and credits.
@@ -8,7 +8,7 @@ contract ExpenseGroup is Pausable {
     /**
     Max number of payees for a expense (Restriction to avoid high gas costs)
     */
-    uint8 constant MAX_PAYEES = 20;
+    uint8 constant MAX_PAYEES = 10;
 
     /**
     Member is a person or company which is part of current expense group.
@@ -72,8 +72,8 @@ contract ExpenseGroup is Pausable {
 
     /// @notice Constructor. The creator of the smart contract will be the first member.
     /// @param _name the name of the first member.
-    constructor(string memory _name) {
-        addMember(_name, msg.sender);
+    constructor(address _owner, string memory _name) {
+        addMember(_name, _owner);
         isContractInstanceCreated = true;
     }
 

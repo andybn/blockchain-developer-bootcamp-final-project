@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "./ExpenseGroup.sol";
 
-contract Factory {
+contract ExpenseGroupFactory {
     ExpenseGroup[] public expenseGroups;
     uint256 disabledCount;
 
@@ -13,7 +13,7 @@ contract Factory {
     );
 
     function createExpenseGroup(string memory _name) external {
-        ExpenseGroup expenseGroup = new ExpenseGroup(_name);
+        ExpenseGroup expenseGroup = new ExpenseGroup(msg.sender,_name);
         expenseGroups.push(expenseGroup);
         emit ExpenseGroupCreated(address(expenseGroup), _name);
     }
@@ -21,18 +21,8 @@ contract Factory {
     function getExpenseGroups()
         external
         view
-        returns (ExpenseGroup[] memory _expenseGroups)
+        returns (ExpenseGroup[] memory)
     {
-        _expenseGroups = new ExpenseGroup[](
-            expenseGroups.length - disabledCount
-        );
-
-        uint256 count;
-
-        for (uint256 i = 0; i < expenseGroups.length; i++) {
-           if(!expenseGroups[i].paused())
-            _expenseGroups[count] = expenseGroups[i];
-            count++;
-        }
+        return expenseGroups;
     }
 }
