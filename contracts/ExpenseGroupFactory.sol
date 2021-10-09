@@ -9,13 +9,13 @@ contract ExpenseGroupFactory {
 
     event ExpenseGroupCreated(
         address indexed _expenseGroupAddress,
-        string indexed _name
+        string indexed _ownerName
     );
 
-    function createExpenseGroup(string memory _name) external {
-        ExpenseGroup expenseGroup = new ExpenseGroup(msg.sender,_name);
+    function createExpenseGroup(string memory _ownerName, string memory _title) external {
+        ExpenseGroup expenseGroup = new ExpenseGroup(msg.sender, _ownerName, _title);
         expenseGroups.push(expenseGroup);
-        emit ExpenseGroupCreated(address(expenseGroup), _name);
+        emit ExpenseGroupCreated(address(expenseGroup), _ownerName);
     }
 
     function getExpenseGroups()

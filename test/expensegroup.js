@@ -17,11 +17,17 @@ contract('ExpenseGroup', (accounts) => {
   const payForABCD = [SENDER_A, SENDER_B, SENDER_C, SENDER_D]
 
   before('Setup contract once before all the tests', async function () {
-    contractInstance = await ExpenseGroup.new(SENDER_A, 'SenderA');
+    contractInstance = await ExpenseGroup.new(SENDER_A, 'SenderA', "WorldTrip");
   })
 
   describe('Expense group core logic', function () {
-    it('First member should have his balance equal to 0', async function () {
+
+    it('Should return correct original title', async function () {
+      let title = await contractInstance.title.call();
+      assert.equal(title, "WorldTrip");
+    })
+
+    it('First member should have his balance equals to 0', async function () {
       let balance = await contractInstance.getBalance.call(SENDER_A);
       assert.equal(balance, 0);
     })
@@ -45,7 +51,7 @@ contract('ExpenseGroup', (accounts) => {
       )
     })
 
-    it('Members should have their balance equal to 0', async function () {
+    it('Members should have their balance equals to 0', async function () {
       await contractInstance.addMember('SenderB', SENDER_B, { from: SENDER_A });
       await checkGetBalance(SENDER_A, SENDER_B, 0);
       await contractInstance.addMember('SenderC', SENDER_C, { from: SENDER_B });

@@ -46,8 +46,12 @@ contract ExpenseGroup is Pausable {
         address payee;
     }
 
+    string public title;
+
+    /// Users of current expense group
     mapping(address => Member) public members;
 
+    // Addresses of all the members
     address[] public memberAddresses;
 
     /// Allow the creation of the first member when the contract instance is created.
@@ -59,7 +63,7 @@ contract ExpenseGroup is Pausable {
 
     Payment[] public payments;
 
-    // A mapping of all the available withdrawals per address.
+    /// A mapping of all the available withdrawals per address.
     mapping(address => uint256) public withdrawals;
 
     modifier onlyMember() {
@@ -71,9 +75,12 @@ contract ExpenseGroup is Pausable {
     }
 
     /// @notice Constructor. The creator of the smart contract will be the first member.
-    /// @param _name the name of the first member.
-    constructor(address _owner, string memory _name) {
-        addMember(_name, _owner);
+    /// @param _owner address of the first member.
+    /// @param _ownerName Yhe name of the first member.
+    /// @param _title ExpenseGroup title 
+    constructor(address _owner, string memory _ownerName, string memory _title) {
+        addMember(_ownerName, _owner);
+        title = _title;
         isContractInstanceCreated = true;
     }
 
