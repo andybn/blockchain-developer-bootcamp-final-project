@@ -16,7 +16,7 @@ contract('ExpenseGroupFactory', (accounts) => {
 
       const tx = await factoryContractInstance.createExpenseGroup("SenderA", "WorldTrip", { from: accounts[0] })
       
-      const expenseGroups = await factoryContractInstance.getExpenseGroups();
+      //const expenseGroups = await factoryContractInstance.getExpenseGroups();
 
       // let expenseGroupsSummary = [];
 
