@@ -9,6 +9,7 @@ class App extends Component {
 
   componentDidMount = async () => {
     try {
+      
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
 

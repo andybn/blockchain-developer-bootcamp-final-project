@@ -20,7 +20,7 @@ contract('ExpenseGroup', (accounts) => {
     contractInstance = await ExpenseGroup.new(SENDER_A, 'SenderA');
   })
 
-  describe('Expense group logic', function () {
+  describe('Expense group core logic', function () {
     it('First member should have his balance equal to 0', async function () {
       let balance = await contractInstance.getBalance.call(SENDER_A);
       assert.equal(balance, 0);
