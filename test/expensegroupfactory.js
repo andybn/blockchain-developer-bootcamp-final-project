@@ -16,29 +16,6 @@ contract('ExpenseGroupFactory', (accounts) => {
 
       const tx = await factoryContractInstance.createExpenseGroup("SenderA", "WorldTrip", { from: accounts[0] })
       
-      //const expenseGroups = await factoryContractInstance.getExpenseGroups();
-
-      // let expenseGroupsSummary = [];
-
-      // for(let i=0; i < expenseGroups.length; i++) {
-      //    const expenseGroup = await ExpenseGroup.at(expenseGroups[i]) 
-      //    let title = await expenseGroup.title.call();         
-      //    let ownerAddress = await expenseGroup.memberAddresses.call(0);
-      //    let ownerName = await expenseGroup.getMemberName(ownerAddress);
-         
-      //    let o = {
-      //      expenseGroupTitle: title,
-      //      expenseGroupOwner: ownerName
-      //    };
-
-      //    expenseGroupsSummary.push(o);         
-      //    console.dir(o);
-      // }
-
-      //const expenseGroup = await ExpenseGroup.at(expenseGroups[0]);            
-
-      //await expenseGroup.addMember('SenderB', accounts[1], { from: accounts[0] })            
-
       assert.equal(
         tx.logs[0].event,
         "ExpenseGroupCreated",
