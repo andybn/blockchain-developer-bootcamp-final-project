@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-import Container from '@material-ui/core/Container'
 import './BlockchainConnector.css'
 import { connect } from 'react-redux'
 import { loadWeb3, loadAccount } from '../../redux/interactions'
@@ -9,7 +8,6 @@ import {
   web3Selector
 } from '../../redux/selectors'
 import { subscribeToAccountsChanging } from '../../redux/subscriptions'
-import Paper from '@material-ui/core/Paper'
 
 class BlockchainConnector extends Component {
   render() {
@@ -17,9 +15,10 @@ class BlockchainConnector extends Component {
 
     const connectBlockchain = async (e) => {
       e.preventDefault();
-      const web3Library = await loadWeb3(dispatch);
-      await loadAccount(dispatch, web3Library);
-      subscribeToAccountsChanging(dispatch, web3Library);
+      //TODO: Add error handling and text if no provider is detected
+      const web3 = await loadWeb3(dispatch);
+      await loadAccount(dispatch, web3);
+      subscribeToAccountsChanging(dispatch, web3);
     }
 
     return (
@@ -27,18 +26,11 @@ class BlockchainConnector extends Component {
         <form onSubmit={connectBlockchain}>
           <button
             type="submit"
-            className={`${contract !== null ? 'disabled' : ''}`}>
-            {contract !== null ? 'Blockchain Connected' : 'Connect Blockchain'}
+            className={`${account !== null ? 'disabled' : ''}`}>
+            {account !== null ? 'Connected' : 'Connect'}
           </button>          
           <label style={{marginLeft: '50px' }}>Account: {account}</label>
-        </form>
-        <div>
-          <div>            
-            {/* <p>
-              Changing accounts in Metamask should refresh this account address
-            </p> */}
-          </div>
-        </div>
+        </form>        
       </div>
     )
   }
