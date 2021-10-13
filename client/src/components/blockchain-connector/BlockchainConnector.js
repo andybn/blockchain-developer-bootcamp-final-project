@@ -23,24 +23,23 @@ class BlockchainConnector extends Component {
     }
 
     return (
-      <Container maxWidth="lg" component={Paper}>
+     <div>
         <form onSubmit={connectBlockchain}>
           <button
             type="submit"
-            className={`${contract !== null ? 'disabled' : ''}`}
-          >
+            className={`${contract !== null ? 'disabled' : ''}`}>
             {contract !== null ? 'Blockchain Connected' : 'Connect Blockchain'}
-          </button>
+          </button>          
+          <label style={{marginLeft: '50px' }}>Account: {account}</label>
         </form>
         <div>
-          <div>
-            <label>Account: {account}</label>
-            <p>
+          <div>            
+            {/* <p>
               Changing accounts in Metamask should refresh this account address
-            </p>
+            </p> */}
           </div>
         </div>
-      </Container>
+      </div>
     )
   }
 }
