@@ -4,7 +4,10 @@ import Container from '@material-ui/core/Container'
 import './BlockchainConnector.css'
 import { connect } from 'react-redux'
 import { loadWeb3, loadAccount } from '../../redux/interactions'
-import { accountSelector } from '../../redux/selectors'
+import {
+  accountSelector,  
+  web3Selector
+} from '../../redux/selectors'
 import { subscribeToAccountsChanging } from '../../redux/subscriptions'
 import Paper from '@material-ui/core/Paper'
 
@@ -13,23 +16,21 @@ class BlockchainConnector extends Component {
     const { dispatch, contract, account } = this.props
 
     const connectBlockchain = async (e) => {
-      e.preventDefault()
-      const web3Library = await loadWeb3(dispatch)
-      await loadAccount(dispatch, web3Library)
-      subscribeToAccountsChanging(dispatch, web3Library)
+      e.preventDefault();
+      const web3Library = await loadWeb3(dispatch);
+      await loadAccount(dispatch, web3Library);
+      subscribeToAccountsChanging(dispatch, web3Library);
     }
 
     return (
       <Container maxWidth="lg" component={Paper}>
-        <form onSubmit={connectBlockchain}>         
-              <button
-                type="submit"
-                className={`${contract !== null ? 'disabled' : ''}`}
-              >
-                {contract !== null
-                  ? 'Blockchain Connected'
-                  : 'Connect Blockchain'}
-              </button>           
+        <form onSubmit={connectBlockchain}>
+          <button
+            type="submit"
+            className={`${contract !== null ? 'disabled' : ''}`}
+          >
+            {contract !== null ? 'Blockchain Connected' : 'Connect Blockchain'}
+          </button>
         </form>
         <div>
           <div>
@@ -47,6 +48,7 @@ class BlockchainConnector extends Component {
 function mapStateToProps(state) {
   return {
     account: accountSelector(state),
+    web3: web3Selector(state),
   }
 }
 

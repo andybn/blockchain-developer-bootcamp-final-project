@@ -22,10 +22,10 @@ import Paper from '@material-ui/core/Paper'
 class ExpenseGroupList extends Component {
   
     async componentWillUpdate(prevProps){
-        const { dispatch, web3 } = this.props;        
+        const { dispatch } = this.props;        
         
-        if(!prevProps.web3 && this.props.web3) {
-            await loadFactoryContract(dispatch, web3);     
+        if(prevProps.web3) {
+            await loadFactoryContract(dispatch, prevProps.web3);     
         }
     }
 
