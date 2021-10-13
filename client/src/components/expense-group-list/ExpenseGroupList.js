@@ -8,7 +8,7 @@ import {
   } from '../../redux/interactions'
   import {
     factoryContractSelector,
-    expenseGroupsSelector,    
+    expenseGroupContractsSelector,    
     web3Selector
   } from '../../redux/selectors'
 import Table from '@material-ui/core/Table'
@@ -40,12 +40,12 @@ class ExpenseGroupList extends Component {
 
     render() {
     
-    const { expenseGroups } = this.props
+    const { expenseGroupContracts } = this.props
 
     return (
         <div>      
         <h2>Expense groups</h2>
-        {expenseGroups && expenseGroups.length > 0 && (
+        {expenseGroupContracts && expenseGroupContracts.length > 0 && (
            <TableContainer component={Paper}>
               <Table aria-label="simple table">
                 <TableHead>
@@ -56,7 +56,7 @@ class ExpenseGroupList extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {expenseGroups.map((row) => (
+                  {expenseGroupContracts.map((row) => (
                     <TableRow key={row.contractAddress}>
                       <TableCell align="left">
                         {row.expenseGroupTitle}
@@ -80,7 +80,7 @@ class ExpenseGroupList extends Component {
 
 function mapStateToProps(state) {
   return {
-    expenseGroups: expenseGroupsSelector(state),
+    expenseGroupContracts: expenseGroupContractsSelector(state),
     factoryContract: factoryContractSelector(state),    
     web3: web3Selector(state)
   }

@@ -12,5 +12,5 @@ export const accountSelector = createSelector(account, a => a);
 const factoryContract = state => get(state, 'contract.factoryContract', null);
 export const factoryContractSelector = createSelector(factoryContract, a => a);
 
-const expenseGroups = state => get(state, 'contract.expenseGroups', null);
-export const expenseGroupsSelector = createSelector(expenseGroups, a => a);
+const expenseGroupContracts = state => get(state, 'contract.expenseGroupContracts', null);
+export const expenseGroupContractsSelector = createSelector(expenseGroupContracts, a => a);

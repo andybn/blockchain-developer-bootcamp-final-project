@@ -15,8 +15,8 @@ function contract(state = {}, action) {
   switch (action.type) {
     case 'FACTORY_CONTRACT_LOADED':
       return { ...state, factoryContract: action.factoryContract };
-    case 'EXPENSE_GROUPS_LOADED':
-      return { ...state, expenseGroups: action.expenseGroups };
+    case 'EXPENSE_GROUP_CONTRACTS_LOADED':
+      return { ...state, expenseGroupContracts: action.expenseGroupContracts };
     default:
       return state;
   }

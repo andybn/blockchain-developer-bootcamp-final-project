@@ -3,7 +3,7 @@ import {
   web3Loaded,
   factoryContractLoaded,
   accountLoaded,
-  expenseGroupsLoaded,
+  expenseGroupContractsLoaded,
 } from './actions';
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json';
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json';
@@ -69,6 +69,6 @@ export const loadExpenseGroups = async (dispatch, contract, web3) => {
     });
   }
 
-  dispatch(expenseGroupsLoaded(expenseGroupContracts));
+  dispatch(expenseGroupContractsLoaded(expenseGroupContracts));
   return expenseGroupContracts;
 }

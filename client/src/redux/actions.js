@@ -19,9 +19,9 @@ export function factoryContractLoaded(factoryContract){
   }
 }
 
-export function expenseGroupsLoaded(expenseGroups){
+export function expenseGroupContractsLoaded(expenseGroupContracts){
   return {
-    type: 'EXPENSE_GROUPS_LOADED',
-    expenseGroups
+    type: 'EXPENSE_GROUP_CONTRACTS_LOADED',
+    expenseGroupContracts
   }
 }
