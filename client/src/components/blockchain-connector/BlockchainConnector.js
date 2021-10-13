@@ -14,8 +14,8 @@ class BlockchainConnector extends Component {
 
     const connectBlockchain = async (e) => {
       e.preventDefault()
-      const web3 = await loadWeb3(dispatch)
-      await loadAccount(dispatch, web3)
+      const web3Library = await loadWeb3(dispatch)
+      await loadAccount(dispatch, web3Library)
       subscribeToAccountsChanging(dispatch, web3Library)
     }
 
