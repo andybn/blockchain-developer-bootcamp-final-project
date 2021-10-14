@@ -34,9 +34,9 @@ export const loadFactoryContract = async (dispatch, web3) => {
   return instance
 }
 
-export const loadExpenseGroups = async (dispatch, contract, web3) => {
+export const loadExpenseGroupContracts = async (dispatch, contract, web3) => {
   
-  //const accounts = await web3.eth.getAccounts();
+  // const accounts = await web3.eth.getAccounts();
 
   // await contract.methods
   //   .createExpenseGroup('SenderA', 'WorldTrip')

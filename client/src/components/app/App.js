@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
-import BlockchainConnector from '../blockchain-connector/BlockchainConnector'
-import ExpenseGroupList from '../expense-group-list/ExpenseGroupList'
-import './App.css'
-import Container from '@material-ui/core/Container'
-
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Navbar from "../navbar/Navbar";
+import Home from "../pages/home/Home";
 class App extends Component {
-  render() {
-   
-    return (
-      
-      <Container maxWidth="lg">    
-        <h1> Go Dutch! </h1>
-        <BlockchainConnector></BlockchainConnector>
-        <ExpenseGroupList></ExpenseGroupList>
-      </Container>
-      
+  render() {   
+    return (      
+      <Router>
+      <Navbar />
+      <div className="App">
+        <header className="App-header">
+          <Switch>          
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </header>
+      </div>
+    </Router>
     )
   }
 }
