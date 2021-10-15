@@ -7,8 +7,7 @@ import BlockchainConnector from '../blockchain-connector/BlockchainConnector';
 
 const Navbar = () => {
   const classes = useStyles();
-  return (
-    <Router>
+  return (  
       <AppBar position="static">
         <Toolbar>                 
           <Box display="flex" flexGrow={1}>                        
@@ -19,7 +18,6 @@ const Navbar = () => {
           <BlockchainConnector></BlockchainConnector>
         </Toolbar>
       </AppBar>
-    </Router>
   )
 }
 

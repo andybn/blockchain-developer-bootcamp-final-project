@@ -1,15 +1,4 @@
-import React, { Component } from 'react';
-import './ExpenseGroupList.css';
-import { connect } from 'react-redux';
-import {
-  loadExpenseGroupContracts,
-  loadFactoryContract,
-} from '../../redux/interactions';
-import {
-  factoryContractSelector,
-  expenseGroupContractsSelector,
-  web3Selector,
-} from '../../redux/selectors';
+import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,65 +6,40 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Link } from 'react-router-dom';
 
-class ExpenseGroupList extends Component {
-  async componentWillUpdate(prevProps) {
-    const { dispatch } = this.props;
-
-    if (prevProps.web3) {
-      await loadFactoryContract(dispatch, prevProps.web3);
-    }
-  }
-
-  async componentDidUpdate(prevProps) {
-    const { dispatch, factoryContract, web3 } = this.props;
-
-    if (!prevProps.factoryContract && this.props.factoryContract) {
-      await loadExpenseGroupContracts(dispatch, factoryContract, web3);
-    }
-  }
-
-  render() {
-    const { expenseGroupContracts } = this.props
-
-    return (
-      <div>        
-        {expenseGroupContracts && expenseGroupContracts.length > 0 && (
-          <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell colSpan={3}>Expense groups</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left">Title</TableCell>
-                  <TableCell align="left">Owner</TableCell>
-                  <TableCell align="left">Contract address</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {expenseGroupContracts.map((row) => (
-                  <TableRow key={row.contractAddress}>
-                    <TableCell align="left">{row.expenseGroupTitle}</TableCell>
-                    <TableCell align="left">{row.expenseGroupOwner}</TableCell>
-                    <TableCell align="left">{row.contractAddress}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </div>
-    )
-  }
+const ExpenseGroupList = (props) => {
+  return (
+    <div>        
+    {props.expenseGroupContracts && props.expenseGroupContracts.length > 0 && (
+      <TableContainer component={Paper}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell colSpan={3}>Expense groups</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="left">Title</TableCell>
+              <TableCell align="left">Owner</TableCell>
+              <TableCell align="left">Contract address</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {props.expenseGroupContracts.map((row) => (
+              <TableRow key={row.contractAddress}>
+                <TableCell align="left">{row.expenseGroupTitle}</TableCell>
+                <TableCell align="left">{row.expenseGroupOwner}</TableCell>
+                <TableCell align="left">                      
+                  <Link to={`/expense-group/${row.contractAddress}`}>{row.contractAddress}</Link>  
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )}
+  </div>
+  )
 }
 
-function mapStateToProps(state) {
-  return {
-    expenseGroupContracts: expenseGroupContractsSelector(state),
-    factoryContract: factoryContractSelector(state),
-    web3: web3Selector(state),
-  }
-}
-
-export default connect(mapStateToProps)(ExpenseGroupList)
+export default ExpenseGroupList;
