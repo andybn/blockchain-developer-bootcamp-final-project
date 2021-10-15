@@ -1,29 +1,34 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux'
 
 function web3(state = {}, action) {
   switch (action.type) {
     case 'WEB3_LOADED':
-      return { ...state, connection: action.connection };
+      return { ...state, connection: action.connection }
     case 'ACCOUNT_LOADED':
-      return { ...state, account: action.account};
+      return { ...state, account: action.account }
     default:
-      return state;
+      return state
   }
 }
 
 function contract(state = {}, action) {
   switch (action.type) {
     case 'FACTORY_CONTRACT_LOADED':
-      return { ...state, factoryContract: action.factoryContract };
+      return { ...state, factoryContract: action.factoryContract }
     case 'EXPENSE_GROUP_CONTRACTS_LOADED':
-      return { ...state, expenseGroupContracts: action.expenseGroupContracts };
+      return { ...state, expenseGroupContracts: action.expenseGroupContracts }
+    case 'EXPENSE_GROUP_CONTRACT_LOADED':
+      return { ...state, contract: action.contract }
+    case 'EXPENSE_GROUP_MEMBERS_LOADED':
+      return { ...state, members: action.members }
     default:
-      return state;
+      return state
   }
 }
 
 const rootReducer = new combineReducers({
-  web3, contract
-});
+  web3,
+  contract,
+})
 
-export default rootReducer;
+export default rootReducer

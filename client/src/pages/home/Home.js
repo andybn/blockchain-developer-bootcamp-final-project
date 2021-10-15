@@ -1,38 +1,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
- withRouter
-} from 'react-router-dom'
-import {
   loadExpenseGroupContracts,
   loadFactoryContract,
-} from '../../../redux/interactions';
+} from '../../redux/interactions';
 import {
   factoryContractSelector,
   expenseGroupContractsSelector,
   web3Selector,
-} from '../../../redux/selectors';
-import ExpenseGroupList from '../../expense-group-list/ExpenseGroupList'
+} from '../../redux/selectors';
+import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupList'
 
 class Home extends Component {
-  async componentWillUpdate(prevProps) {
-    const { dispatch } = this.props;
-
-    if (prevProps.web3 && !this.props.web3) {
-      await loadFactoryContract(dispatch, prevProps.web3);
-    }
+ 
+  async componentDidMount(prevProps) {   
+    this.initialize(this.props);
   }
 
   async componentDidUpdate(prevProps) {
-    const { dispatch, factoryContract, web3 } = this.props;
+    this.initialize(this.props);
+  }
 
-    if (!prevProps.factoryContract && this.props.factoryContract) {
+  async initialize(props) {
+    const { web3, dispatch, factoryContract, expenseGroupContracts } = props;
+
+    if (web3 && !factoryContract) {
+      await loadFactoryContract(dispatch, web3);
+    }
+
+    if (factoryContract && !expenseGroupContracts) {
       await loadExpenseGroupContracts(dispatch, factoryContract, web3);
     }
   }
 
   render() {
-    const { expenseGroups } = this.props
+    const { expenseGroups } = this.props;
     return (
       <ExpenseGroupList expenseGroupContracts={expenseGroups}></ExpenseGroupList>
     )

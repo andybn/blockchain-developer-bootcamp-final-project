@@ -1,20 +1,19 @@
 import React, { Component } from 'react'
 import {
-  BrowserRouter,
   Switch,
   Route,
   withRouter
 } from 'react-router-dom'
-import Navbar from '../navbar/Navbar'
-import ExpenseGroup from '../pages/expense-group/ExpenseGroup'
-import ExpenseGroupCreation from '../pages/expense-group-creation/ExpenseGroupCreation'
-import Home from '../pages/home/Home'
-import { connect } from 'react-redux';
+import Navbar from './components/navbar/Navbar'
+import ExpenseGroup from './pages/expense-group/ExpenseGroup'
+import ExpenseGroupInsert from './pages/expense-group-insert/ExpenseGroupInsert'
+import Home from './pages/home/Home'
 
 class App extends Component {
+  
   render() {
     return (
-      <BrowserRouter>
+      <div>
         <Navbar />
         <div className="App">
           <header className="App-header">
@@ -23,23 +22,22 @@ class App extends Component {
                 exact 
                 path="/" 
                 component={Home}
-              />
+              />              
               <Route
                 exact
                 path="/expense-group/:contractAddress"
-                component={ExpenseGroup}
-              />
+                component={ExpenseGroup}   
+              />              
               <Route
                 exact
                 path="/expense-groups/add"
-                component={ExpenseGroupCreation}
-              />
-              <Route Component={Home} />
+                component={ExpenseGroupInsert}
+              />           
             </Switch>
           </header>
         </div>
-      </BrowserRouter>
+      </div>
     )
   }
 }
-export default connect()(App)
+export default withRouter(App);

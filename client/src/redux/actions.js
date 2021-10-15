@@ -25,3 +25,17 @@ export function expenseGroupContractsLoaded(expenseGroupContracts){
     expenseGroupContracts
   }
 };
+
+export function expenseGroupContractLoaded(contract){
+  return {
+    type: 'EXPENSE_GROUP_CONTRACT_LOADED',
+    contract
+  }
+};
+
+export function expenseGroupMembersLoaded(members){
+  return {
+    type: 'EXPENSE_GROUP_MEMBERS_LOADED',
+    members
+  }
+};
