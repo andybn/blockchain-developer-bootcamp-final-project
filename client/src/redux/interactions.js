@@ -5,7 +5,7 @@ import {
   accountLoaded,
   expenseGroupContractsLoaded,
   expenseGroupContractLoaded,
-  expenseGroupMembersLoaded
+  expenseGroupMembersLoaded,
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
@@ -87,21 +87,17 @@ export const loadExpenseGroupContract = async (
   return instance
 }
 
-export const loadMembers = async (
-  dispatch,
-  contract
-) => {
-  
-  let members = [];
+export const loadMembers = async (dispatch, contract) => {
+  let members = []
 
-  const membersCount = await contract.methods.getMemberCount().call();
+  const membersCount = await contract.methods.getMemberCount().call()
 
-  for (let i=0; i < membersCount; i++) {
-      const memberAddress = await contract.methods.memberAddresses(i).call();
-      const member = await contract.methods.members(memberAddress).call();
-      members.push(member);
-  }     
+  for (let i = 0; i < membersCount; i++) {
+    const memberAddress = await contract.methods.memberAddresses(i).call()
+    const member = await contract.methods.members(memberAddress).call()
+    members.push(member)
+  }
 
   dispatch(expenseGroupMembersLoaded(members))
-  return members;
+  return members
 }

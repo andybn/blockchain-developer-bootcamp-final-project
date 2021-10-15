@@ -8,9 +8,9 @@ import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import { Link } from 'react-router-dom'
 
-const ExpenseGroupList = (props) => {  
+const ExpenseGroupList = (props) => {
   return (
-    <div>      
+    <div>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
@@ -24,7 +24,7 @@ const ExpenseGroupList = (props) => {
             </TableRow>
           </TableHead>
           {props.expenseGroupContracts &&
-            props.expenseGroupContracts.length > 0 && 
+            props.expenseGroupContracts.length > 0 && (
               <TableBody>
                 {props.expenseGroupContracts.map((row) => (
                   <TableRow key={row.contractAddress}>
@@ -38,9 +38,9 @@ const ExpenseGroupList = (props) => {
                   </TableRow>
                 ))}
               </TableBody>
-            }
+            )}
         </Table>
-      </TableContainer>     
+      </TableContainer>
     </div>
   )
 }
