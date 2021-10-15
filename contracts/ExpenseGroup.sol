@@ -139,6 +139,11 @@ contract ExpenseGroup is Pausable {
         emit MemberAdded(member.identifier);
     }
 
+    /// @notice Returns the current number of members
+    function getMemberCount() public view returns (uint256)  {
+        return memberAddresses.length;
+    }
+
     /// @notice Add an expense as payer. By default, the payer is the creator of the expense.
     /// @dev The number of payees are limited to a fixed number to avoid gas limit using loop.
     /// @param _title the title of the expense.
