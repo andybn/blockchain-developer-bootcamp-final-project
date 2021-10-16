@@ -9,7 +9,7 @@ import {
 import ExpenseGroupMemberList from '../../components/expense-group-member-list/ExpenseGroupMemberList'
 import { withRouter } from 'react-router-dom'
 
-class ExpenseGroup extends Component {
+class ExpenseGroupDetail extends Component {
   async componentDidMount() {
     this.initialize(this.props)
   }
@@ -45,4 +45,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(ExpenseGroup))
+export default withRouter(connect(mapStateToProps)(ExpenseGroupDetail))

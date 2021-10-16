@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Switch, Route, withRouter } from 'react-router-dom'
 import Navbar from './components/navbar/Navbar'
-import ExpenseGroup from './pages/expense-group/ExpenseGroup'
+import ExpenseGroupDetail from './pages/expense-group-detail/ExpenseGroupDetail'
 import ExpenseGroupInsert from './pages/expense-group-insert/ExpenseGroupInsert'
-import Home from './pages/home/Home'
+import ExpenseGroups from './pages/expense-groups/ExpenseGroups'
 
 class App extends Component {
   render() {
@@ -13,11 +13,11 @@ class App extends Component {
         <div className="App">
           <header className="App-header">
             <Switch>
-              <Route exact path="/" component={Home} />
+              <Route exact path="/" component={ExpenseGroups} />
               <Route
                 exact
                 path="/expense-group/:contractAddress"
-                component={ExpenseGroup}
+                component={ExpenseGroupDetail}
               />
               <Route
                 exact

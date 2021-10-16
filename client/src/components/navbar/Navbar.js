@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppBar, Toolbar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link, BrowserRouter as Router } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Box from '@material-ui/core/Box'
 import BlockchainConnector from '../blockchain-connector/BlockchainConnector'
 
