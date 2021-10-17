@@ -21,8 +21,8 @@ class ExpenseGroupDetail extends Component {
   async initialize(props) {
     const { dispatch, web3, contract, members } = props
 
-    if (web3 && !contract) {
-      const address = props.match.params.contractAddress
+    if (web3 && !contract) {     
+      const address = this.props.match.params.contractAddress;
       await loadExpenseGroupContract(dispatch, web3, address)
     }
 
