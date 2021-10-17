@@ -10,6 +10,8 @@ import {
   web3Selector,
 } from '../../redux/selectors'
 import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupList'
+import { Button, Container, ButtonGroup } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 class ExpenseGroups extends Component {
   async componentDidMount(prevProps) {
@@ -35,9 +37,21 @@ class ExpenseGroups extends Component {
   render() {
     const { expenseGroups } = this.props
     return (
-      <ExpenseGroupList
-        expenseGroupContracts={expenseGroups}
-      ></ExpenseGroupList>
+      <Container maxWidth="lg" style={{ marginTop: 20 }}>
+        <ButtonGroup color="primary" aria-label="outlined primary button group" style={{ marginBottom: 20 }}>
+          <Button
+            component={Link}
+            to="/expense-groups/add"
+            variant="outlined"
+            color="inherit"
+          >
+            Add new expense group
+          </Button>
+        </ButtonGroup>
+        <ExpenseGroupList
+          expenseGroupContracts={expenseGroups}
+        ></ExpenseGroupList>
+      </Container>
     )
   }
 }
