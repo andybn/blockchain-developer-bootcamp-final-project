@@ -11,7 +11,7 @@ import {
 } from '../../redux/selectors'
 import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupList'
 
-class Home extends Component {
+class ExpenseGroups extends Component {
   async componentDidMount(prevProps) {
     this.initialize(this.props)
   }
@@ -50,4 +50,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps)(ExpenseGroups)
