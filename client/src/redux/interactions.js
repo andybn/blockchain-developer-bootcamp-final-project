@@ -113,10 +113,9 @@ export const loadExpenses = async (dispatch, contract, account) => {
     const expense = await contract.methods.expenses(i).call()
     expense.identifier = i
     expense.approvals = await contract.methods.getNumberOfApprovals(i)
-    expense.valueDate = expense.valueDate;
+    expense.valueDate = new Date(+expense.valueDate * 1000).toDateString();
+    expense.creationDate = new Date(+expense.creationDate * 1000).toDateString();
     
-
-
     expense.isApprovedByAccount = account ? await contract
       .methods
       .getApproval(i, String(account))

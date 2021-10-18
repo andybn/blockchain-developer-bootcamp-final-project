@@ -15,7 +15,7 @@ const ExpenseGroupExpenseList = (props) => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell colSpan={5}>Expenses</TableCell>
+                <TableCell colSpan={6}>Expenses</TableCell>
               </TableRow>
               <TableRow>                
                <TableCell align="left">Id</TableCell>

@@ -51,7 +51,7 @@ contract ExpenseGroup is Pausable {
 
     /// Users of current expense group
     mapping(address => Member) public members;
-
+    
     // Addresses of all the members
     address[] public memberAddresses;
 
