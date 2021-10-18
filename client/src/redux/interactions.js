@@ -6,6 +6,8 @@ import {
   expenseGroupContractsLoaded,
   expenseGroupContractLoaded,
   expenseGroupMembersLoaded,
+  expenseGroupExpensesLoaded,
+  expenseGroupExpenseAdded,
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
@@ -100,4 +102,42 @@ export const loadMembers = async (dispatch, contract) => {
 
   dispatch(expenseGroupMembersLoaded(members))
   return members
+}
+
+export const loadExpenses = async (dispatch, contract, account) => {
+  let expenses = []
+
+  const expensesCount = await contract.methods.numExpenses().call()
+
+  for (let i = 0; i < expensesCount; i++) {
+    const expense = await contract.methods.expenses(i).call()
+    expense.identifier = i
+    expense.approvals = await contract.methods.getNumberOfApprovals(i)
+    expense.valueDate = expense.valueDate;
+    
+
+
+    expense.isApprovedByAccount = account ? await contract
+      .methods
+      .getApproval(i, String(account))
+      .call() : false;
+    expenses.push(expense)
+  }
+
+  dispatch(expenseGroupExpensesLoaded(expenses))
+
+  return expenses
+}
+
+export const addExpense = async (dispatch, contract, account, expense) => {
+  await contract.methods
+    .addExpense(expense.name, expense.amount, expense.valueDate, expense.payees)
+    .send({ from: account })
+
+  dispatch(expenseGroupExpenseAdded(expense))
+
+  //TODO: Needs to wait for confirmation, get the event and update UI 
+  //TODO: Add also spinner!
+
+  await loadExpenses(dispatch, contract, account);
 }

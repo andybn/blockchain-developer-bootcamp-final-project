@@ -14,22 +14,22 @@ import { Button, Container, ButtonGroup } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
 class ExpenseGroups extends Component {
-  async componentDidMount(prevProps) {
+  async componentDidMount() {
     this.initialize(this.props)
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate() {
     this.initialize(this.props)
   }
 
   async initialize(props) {
-    const { web3, dispatch, factoryContract, expenseGroupContracts } = props
+    const { web3, dispatch, factoryContract, expenseGroups } = props
 
     if (web3 && !factoryContract) {
       await loadFactoryContract(dispatch, web3)
     }
 
-    if (factoryContract && !expenseGroupContracts) {
+    if (factoryContract && !expenseGroups) {
       await loadExpenseGroupContracts(dispatch, factoryContract, web3)
     }
   }

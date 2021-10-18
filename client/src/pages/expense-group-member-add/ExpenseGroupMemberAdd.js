@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Button, Container, ButtonGroup } from '@material-ui/core'
-
 class ExpenseGroupMemberAdd extends Component {
+  
   render() {
     const address = this.props.match.params.contractAddress
     return (

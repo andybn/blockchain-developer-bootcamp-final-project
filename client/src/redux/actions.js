@@ -39,3 +39,17 @@ export function expenseGroupMembersLoaded(members) {
     members,
   }
 }
+
+export function expenseGroupExpensesLoaded(expenses) {
+  return {
+    type: 'EXPENSE_GROUP_EXPENSES_LOADED',
+    expenses,
+  }
+}
+
+export function expenseGroupExpenseAdded(expense) {
+  return {
+    type: 'EXPENSE_GROUP_EXPENSE_ADDED',
+    expense,
+  }
+}

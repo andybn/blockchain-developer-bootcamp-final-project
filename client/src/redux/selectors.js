@@ -25,3 +25,6 @@ export const expenseGroupContractSelector = createSelector(contract, (a) => a)
 
 const members = (state) => get(state, 'contract.members', null)
 export const expenseGroupMembersSelector = createSelector(members, (a) => a)
+
+const expenses = (state) => get(state, 'contract.expenses', null)
+export const expenseGroupExpensesSelector = createSelector(expenses, (a) => a)

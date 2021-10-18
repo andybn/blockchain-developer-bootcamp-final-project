@@ -21,6 +21,10 @@ function contract(state = {}, action) {
       return { ...state, contract: action.contract }
     case 'EXPENSE_GROUP_MEMBERS_LOADED':
       return { ...state, members: action.members }
+    case 'EXPENSE_GROUP_EXPENSES_LOADED':
+      return { ...state, expenses: action.expenses }
+    case 'EXPENSE_GROUP_EXPENSE_ADDED':
+      return { ...state, expenses: state.expenses ? [...state.expenses, action.expense] : [action.expense] }      
     default:
       return state
   }
