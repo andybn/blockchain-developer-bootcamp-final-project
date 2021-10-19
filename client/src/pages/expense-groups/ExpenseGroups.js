@@ -36,9 +36,8 @@ class ExpenseGroups extends Component {
 
   render() {
     const { expenseGroups } = this.props
-    return (
-      
-        <Grid container spacing={20} style={{ margin: 15 }}>
+    return (      
+        <Grid container style={{ margin: 15 }}>
           <Grid item xs={10}>
             <ButtonGroup
               color="primary"

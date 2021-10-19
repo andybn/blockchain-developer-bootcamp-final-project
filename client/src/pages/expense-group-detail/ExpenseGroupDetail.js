@@ -39,21 +39,18 @@ class ExpenseGroupDetail extends Component {
       await loadExpenseGroupContract(dispatch, web3, address)
     }
 
-    if (contract && !members) {
+    if (web3 && contract && account && !members && !expenses) {
       await loadMembers(dispatch, contract)
-    }
-
-    if (contract && !expenses) {
       await loadExpenses(dispatch, contract, account)
     }
 
-    if (web3 && contract && address !== contract.options.address) {
+    if (web3 && contract && account && members && expenses && address !== contract.options.address) {
       this.setState({ contractChanged: true })
       contract = null
       await loadExpenseGroupContract(dispatch, web3, address)
     }
 
-    if (web3 && contract && this.state.contractChanged) {
+    if (web3 && contract && members && expenses && this.state.contractChanged) {
       await loadMembers(dispatch, contract)
       await loadExpenses(dispatch, contract, account)
       this.setState({ contractChanged: false })
@@ -66,7 +63,7 @@ class ExpenseGroupDetail extends Component {
     const contractChanged = this.state.contractChanged
 
     return (
-      <Grid container spacing={20} style={{ margin: 15 }}>
+      <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
           <ButtonGroup
             color="primary"

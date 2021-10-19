@@ -5,7 +5,7 @@ class ExpenseGroupMemberAdd extends Component {
   render() {
     const address = this.props.match.params.contractAddress
     return (
-      <Grid container spacing={20} style={{ margin: 15 }}>
+      <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
           <ButtonGroup
             color="primary"

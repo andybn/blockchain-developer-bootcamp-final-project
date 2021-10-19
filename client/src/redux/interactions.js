@@ -107,7 +107,7 @@ export const loadMembers = async (dispatch, contract) => {
 
 export const loadExpenses = async (dispatch, contract, account) => {
   let expenses = []
-
+  
   const expensesCount = await contract.methods.numExpenses().call()
 
   for (let i = 0; i < expensesCount; i++) {
@@ -118,6 +118,15 @@ export const loadExpenses = async (dispatch, contract, account) => {
     expense.valueDate = new Date(+expense.valueDate * 1000).toDateString();
     expense.creationDate = new Date(+expense.creationDate * 1000).toDateString();
     
+    const payer = expense.payer;
+    const payerName = await contract.methods.getMemberName(expense.payer).call();
+    expense.payerWithName = { address: payer, name: payerName }
+
+    const payeesAddresses = await contract.methods.getPayees(i).call()
+    expense.payees = await Promise.all(payeesAddresses.map( async p => ({ address: p, name: (await contract.methods.getMemberName(p).call())})))
+
+    console.dir(expense);
+
     expense.isApprovedByAccount = account ? await contract
       .methods
       .getApproval(i, String(account))
