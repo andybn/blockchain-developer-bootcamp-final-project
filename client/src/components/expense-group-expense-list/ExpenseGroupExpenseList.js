@@ -2,16 +2,13 @@ import React from 'react'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
 
 const ExpenseGroupExpenseList = (props) => {
   return (
     <div>
-      {props.expenses && props.expenses.length > 0 && (
-        <TableContainer component={Paper}>
+      {props.expenses && props.expenses.length > 0 && (        
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -38,8 +35,7 @@ const ExpenseGroupExpenseList = (props) => {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-        </TableContainer>
+          </Table>        
       )}
     </div>
   )

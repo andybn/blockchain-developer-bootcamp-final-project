@@ -11,6 +11,7 @@ import {
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
+import history from '../common/history';
 
 export const loadWeb3 = async (dispatch) => {
   const web3 = await getWeb3()
@@ -113,6 +114,7 @@ export const loadExpenses = async (dispatch, contract, account) => {
     const expense = await contract.methods.expenses(i).call()
     expense.identifier = i
     expense.approvals = await contract.methods.getNumberOfApprovals(i)
+    //TODO: Extract to common util
     expense.valueDate = new Date(+expense.valueDate * 1000).toDateString();
     expense.creationDate = new Date(+expense.creationDate * 1000).toDateString();
     
@@ -139,4 +141,6 @@ export const addExpense = async (dispatch, contract, account, expense) => {
   //TODO: Add also spinner!
 
   await loadExpenses(dispatch, contract, account);
+
+  history.push(`/expense-group/${contract.options.address}`)
 }

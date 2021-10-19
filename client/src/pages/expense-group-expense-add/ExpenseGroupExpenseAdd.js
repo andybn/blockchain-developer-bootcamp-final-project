@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Button, Container, ButtonGroup } from '@material-ui/core'
+import { Button, Grid, ButtonGroup } from '@material-ui/core'
 import {
   loadExpenseGroupContract,
   addExpense,
@@ -50,7 +50,7 @@ class ExpenseGroupExpenseAdd extends Component {
   render() {
     const address = this.props.match.params.contractAddress
 
-    const { dispatch, web3, contract, account, members } = this.props
+    const { dispatch, contract, account, members } = this.props
 
     const prepareExpenseForInsertion = async (e) => {
       e.preventDefault()
@@ -66,17 +66,22 @@ class ExpenseGroupExpenseAdd extends Component {
     }
 
     return (
-      <Container maxWidth="lg" style={{ marginTop: 20 }}>
-        <ButtonGroup color="primary" aria-label="outlined primary button group">
-          <Button
-            onClick={prepareExpenseForInsertion}
-            variant="outlined"
-            color="inherit"
+      <Grid container spacing={20} style={{ margin: 15 }}>
+        <Grid item xs={10}>
+          <ButtonGroup
+            color="primary"
+            aria-label="outlined primary button group"
           >
-            [ADD EXPENSE TO EXPENSE GROUP {address} ]
-          </Button>
-        </ButtonGroup>
-      </Container>
+            <Button
+              onClick={prepareExpenseForInsertion}
+              variant="outlined"
+              color="inherit"
+            >
+              [ADD EXPENSE TO EXPENSE GROUP {address} ]
+            </Button>
+          </ButtonGroup>
+        </Grid>
+      </Grid>
     )
   }
 }

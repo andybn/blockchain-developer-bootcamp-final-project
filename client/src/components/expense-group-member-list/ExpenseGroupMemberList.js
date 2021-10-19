@@ -2,17 +2,14 @@ import React from 'react'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
 
 const ExpenseGroupMemberList = (props) => {
   return (
     <div>
-      {props.members && props.members.length > 0 && (
-        <TableContainer component={Paper}>
-          <Table aria-label="simple table">
+      {props.members && props.members.length > 0 && (        
+          <Table aria-label="simple table" style={{"width" : "100%"}}>
             <TableHead>
               <TableRow>
                 <TableCell colSpan={4}>Expense group members</TableCell>
@@ -35,7 +32,6 @@ const ExpenseGroupMemberList = (props) => {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
       )}
     </div>
   )
