@@ -125,8 +125,6 @@ export const loadExpenses = async (dispatch, contract, account) => {
     const payeesAddresses = await contract.methods.getPayees(i).call()
     expense.payees = await Promise.all(payeesAddresses.map( async p => ({ address: p, name: (await contract.methods.getMemberName(p).call())})))
 
-    console.dir(expense);
-
     expense.isApprovedByAccount = account ? await contract
       .methods
       .getApproval(i, String(account))
