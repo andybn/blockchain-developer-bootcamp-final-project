@@ -11,17 +11,18 @@ import {
   expenseGroupExpensesSelector,
   web3Selector,
   accountSelector,
-  networkSelector
+  networkSelector,
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../components/expense-group-member-list/ExpenseGroupMemberList'
 import ExpenseGroupExpenseList from '../../components/expense-group-expense-list/ExpenseGroupExpenseList'
+import ExpenseGroupDetailToolbar from '../../components/expense-group-detail-toolbar/ExpenseGroupDetailToolbar'
 import { withRouter } from 'react-router-dom'
-import { Button, Grid, ButtonGroup } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+import { Grid } from '@material-ui/core'
+
 class ExpenseGroupDetail extends Component {
-    
   async componentDidMount() {
     await this.initialize()
+    this.setState({ reloading: false })
   }
 
   async componentDidUpdate(prevProps) {
@@ -70,28 +71,9 @@ class ExpenseGroupDetail extends Component {
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
-          <ButtonGroup
-            color="primary"
-            aria-label="outlined primary button group"
-            style={{ marginBottom: 20 }}
-          >
-            <Button
-              component={Link}
-              to={`/expense-group/${address}/expenses/add`}
-              variant="outlined"
-              color="inherit"
-            >
-              Add new expense
-            </Button>
-            <Button
-              component={Link}
-              to={`/expense-group/${address}/members/add`}
-              variant="outlined"
-              color="inherit"
-            >
-              Add new member
-            </Button>
-          </ButtonGroup>
+          <ExpenseGroupDetailToolbar
+            address={address}
+          ></ExpenseGroupDetailToolbar>
         </Grid>
         <Grid item xs={10}>
           <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>

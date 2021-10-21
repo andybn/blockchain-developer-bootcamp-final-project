@@ -11,8 +11,8 @@ import {
   networkSelector,
 } from '../../redux/selectors'
 import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupList'
-import { Button, Grid, ButtonGroup } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+import { Grid } from '@material-ui/core'
+import ExpenseGroupsToolbar from '../../components/expense-groups-toolbar/ExpenseGroupsToolbar'
 class ExpenseGroups extends Component {
  
   async componentDidMount() {
@@ -50,20 +50,7 @@ class ExpenseGroups extends Component {
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
-          <ButtonGroup
-            color="primary"
-            aria-label="outlined primary button group"
-            style={{ marginBottom: 20 }}
-          >
-            <Button
-              component={Link}
-              to="/expense-groups/add"
-              variant="outlined"
-              color="inherit"
-            >
-              Add new expense group
-            </Button>
-          </ButtonGroup>
+          <ExpenseGroupsToolbar></ExpenseGroupsToolbar>
         </Grid>
         <Grid item xs={10}>
           <ExpenseGroupList
