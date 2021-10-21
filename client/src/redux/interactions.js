@@ -8,6 +8,7 @@ import {
   expenseGroupMembersLoaded,
   expenseGroupExpensesLoaded,
   expenseGroupExpenseAdded,
+  networkChanged
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
@@ -24,6 +25,11 @@ export const loadAccount = async (dispatch, web3) => {
   const account = accounts[0]
   dispatch(accountLoaded(account))
   return account
+}
+
+export const changeNetwork = async (dispatch, networkId) => {
+  dispatch(networkChanged(networkId))
+  return networkId
 }
 
 export const loadFactoryContract = async (dispatch, web3) => {
@@ -81,9 +87,13 @@ export const loadExpenseGroupContract = async (
   web3,
   contractAddress,
 ) => {
+  
+  const networkId = await web3.eth.net.getId()
+  const deployedNetwork = ExpenseGroupContract.networks[networkId]
+
   const instance = new web3.eth.Contract(
     ExpenseGroupContract.abi,
-    contractAddress,
+    deployedNetwork && contractAddress,
   )
 
   dispatch(expenseGroupContractLoaded(instance))

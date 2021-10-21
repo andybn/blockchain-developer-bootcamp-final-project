@@ -29,22 +29,15 @@ class ExpenseGroupExpenseAdd extends Component {
   }
 
   async initialize(props) {
-    const { dispatch, web3, contract, members } = props
+    const { dispatch, web3, contract } = props
 
     const address = props.match.params.contractAddress
     if ((web3 && !contract) || (web3 && address !== contract.options.address)) {
-      await loadExpenseGroupContract(dispatch, web3, address)
-      this.setState({ contractChanged: true })
-    }
-
-    if (contract && !members) {
+      contract = await loadExpenseGroupContract(dispatch, web3, address)
       await loadMembers(dispatch, contract)
     }
 
-    if (contract && !members && this.state.contractChanged) {
-      await loadMembers(dispatch, contract)
-      this.setState({ contractChanged: false })
-    }
+    //TODO: Add support for network changed
   }
 
   render() {

@@ -12,6 +12,13 @@ export function accountLoaded(account) {
   }
 }
 
+export function networkChanged(networkId) {
+  return {
+    type: 'NETWORK_CHANGED',
+    networkId,
+  }
+}
+
 export function factoryContractLoaded(factoryContract) {
   return {
     type: 'FACTORY_CONTRACT_LOADED',

@@ -11,6 +11,7 @@ import {
   expenseGroupExpensesSelector,
   web3Selector,
   accountSelector,
+  networkSelector,
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../components/expense-group-member-list/ExpenseGroupMemberList'
 import ExpenseGroupExpenseList from '../../components/expense-group-expense-list/ExpenseGroupExpenseList'
@@ -18,49 +19,42 @@ import { withRouter } from 'react-router-dom'
 import { Button, Grid, ButtonGroup } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 class ExpenseGroupDetail extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { contractChanged: false }
-  }
-
   async componentDidMount() {
     this.initialize(this.props)
   }
 
-  async componentDidUpdate() {
-    this.initialize(this.props)
+  async componentDidUpdate(prevProps) {
+    this.initialize(this.props, prevProps)
   }
 
-  async initialize(props) {
-    let { dispatch, web3, contract, members, account, expenses } = props
+  async initialize(props, prevProps) {
+    let { web3, contract, networkId } = props
     const address = props.match.params.contractAddress
 
     if (web3 && !contract) {
-      await loadExpenseGroupContract(dispatch, web3, address)
+      this.loadData(props)
     }
 
-    if (web3 && contract && account && !members && !expenses) {
-      await loadMembers(dispatch, contract)
-      await loadExpenses(dispatch, contract, account)
+    if (web3 && contract && address !== contract.options.address) {
+      this.loadData(props)
     }
 
-    if (web3 && contract && account && members && expenses && address !== contract.options.address) {
-      this.setState({ contractChanged: true })
-      contract = null
-      await loadExpenseGroupContract(dispatch, web3, address)
+    if (prevProps && prevProps.networkId && prevProps.networkId !== networkId) {
+      this.loadData(props)
     }
+  }
 
-    if (web3 && contract && members && expenses && this.state.contractChanged) {
-      await loadMembers(dispatch, contract)
-      await loadExpenses(dispatch, contract, account)
-      this.setState({ contractChanged: false })
-    }
+  async loadData(props) {
+    let { dispatch, web3, contract, account } = props
+    const address = props.match.params.contractAddress
+    contract = await loadExpenseGroupContract(dispatch, web3, address)
+    await loadMembers(dispatch, contract)
+    await loadExpenses(dispatch, contract, account)
   }
 
   render() {
     const { members, expenses } = this.props
     const address = this.props.match.params.contractAddress
-    const contractChanged = this.state.contractChanged
 
     return (
       <Grid container style={{ margin: 15 }}>
@@ -89,16 +83,12 @@ class ExpenseGroupDetail extends Component {
           </ButtonGroup>
         </Grid>
         <Grid item xs={10}>
-          {!contractChanged && (
-            <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
-          )}
+          <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
         </Grid>
         <Grid item xs={10}>
-          {!contractChanged && (
-            <ExpenseGroupExpenseList
-              expenses={expenses}
-            ></ExpenseGroupExpenseList>
-          )}
+          <ExpenseGroupExpenseList
+            expenses={expenses}
+          ></ExpenseGroupExpenseList>
         </Grid>
       </Grid>
     )
@@ -112,6 +102,7 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     members: expenseGroupMembersSelector(state),
     expenses: expenseGroupExpensesSelector(state),
+    networkId: networkSelector(state),
   }
 }
 
