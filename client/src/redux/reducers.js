@@ -32,9 +32,19 @@ function contract(state = {}, action) {
   }
 }
 
+function common(state = {}, action) {
+  switch (action.type) {
+    case 'LOADING_FLAG_SET':
+      return { ...state, loading: action.loading }
+    default:
+      return state
+  }
+}
+
 const rootReducer = new combineReducers({
   web3,
   contract,
+  common
 })
 
 export default rootReducer

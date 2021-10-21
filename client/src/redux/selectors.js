@@ -31,3 +31,8 @@ export const expenseGroupMembersSelector = createSelector(members, (a) => a)
 
 const expenses = (state) => get(state, 'contract.expenses', null)
 export const expenseGroupExpensesSelector = createSelector(expenses, (a) => a)
+
+//COMMON
+const loading = (state) => get(state, 'common.loading', null)
+export const loadingSelector = createSelector(loading, (a) => a)
+

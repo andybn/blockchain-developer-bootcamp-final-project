@@ -8,7 +8,8 @@ import {
   expenseGroupMembersLoaded,
   expenseGroupExpensesLoaded,
   expenseGroupExpenseAdded,
-  networkChanged
+  networkChanged,
+  loadingFlagSet
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
@@ -160,4 +161,9 @@ export const addExpense = async (dispatch, contract, account, expense) => {
   await loadExpenses(dispatch, contract, account);
 
   history.push(`/expense-group/${contract.options.address}`)
+}
+
+export const setLoadingFlag = async (dispatch, loading) => {
+  dispatch(loadingFlagSet(loading))
+  return loading
 }

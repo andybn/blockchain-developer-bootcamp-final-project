@@ -60,3 +60,10 @@ export function expenseGroupExpenseAdded(expense) {
     expense,
   }
 }
+
+export function loadingFlagSet(loading) {
+  return {
+    type: 'LOADING_FLAG_SET',
+    loading
+  }
+}

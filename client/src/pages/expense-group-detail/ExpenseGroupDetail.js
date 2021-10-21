@@ -4,6 +4,7 @@ import {
   loadExpenseGroupContract,
   loadExpenses,
   loadMembers,
+  setLoadingFlag
 } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
@@ -12,6 +13,7 @@ import {
   web3Selector,
   accountSelector,
   networkSelector,
+  loadingSelector
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../components/expense-group-member-list/ExpenseGroupMemberList'
 import ExpenseGroupExpenseList from '../../components/expense-group-expense-list/ExpenseGroupExpenseList'
@@ -34,7 +36,7 @@ class ExpenseGroupDetail extends Component {
       this.isContractNotLoaded() ||
       this.hasContractChanged() ||
       this.hasNetworkChanged(prevProps)
-    ) {
+    ) {    
       this.reload(this.props)
     }
   }
@@ -55,17 +57,19 @@ class ExpenseGroupDetail extends Component {
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
-  async reload(props) {
+  async reload(props) {    
     let { contract } = props
     const { dispatch, web3, account } = props
+    setLoadingFlag(dispatch, true)
     const address = props.match.params.contractAddress
     contract = await loadExpenseGroupContract(dispatch, web3, address)
     await loadMembers(dispatch, contract)
     await loadExpenses(dispatch, contract, account)
+    setLoadingFlag(dispatch, false)
   }
 
   render() {
-    const { members, expenses } = this.props
+    const { members, expenses, loading } = this.props
     const address = this.props.match.params.contractAddress
 
     return (
@@ -75,14 +79,18 @@ class ExpenseGroupDetail extends Component {
             address={address}
           ></ExpenseGroupDetailToolbar>
         </Grid>
-        <Grid item xs={10}>
-          <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
-        </Grid>
-        <Grid item xs={10}>
-          <ExpenseGroupExpenseList
-            expenses={expenses}
-          ></ExpenseGroupExpenseList>
-        </Grid>
+        {!loading && (
+          <Grid item xs={10}>
+            <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
+          </Grid>
+        )}
+        {!loading && (
+          <Grid item xs={10}>
+            <ExpenseGroupExpenseList
+              expenses={expenses}
+            ></ExpenseGroupExpenseList>
+          </Grid>
+        )}
       </Grid>
     )
   }
@@ -96,6 +104,7 @@ function mapStateToProps(state) {
     members: expenseGroupMembersSelector(state),
     expenses: expenseGroupExpensesSelector(state),
     networkId: networkSelector(state),
+    loading: loadingSelector(state),
   }
 }
 
