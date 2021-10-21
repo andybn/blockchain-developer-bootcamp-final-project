@@ -11,7 +11,7 @@ import {
   expenseGroupExpensesSelector,
   web3Selector,
   accountSelector,
-  networkSelector,
+  networkSelector
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../components/expense-group-member-list/ExpenseGroupMemberList'
 import ExpenseGroupExpenseList from '../../components/expense-group-expense-list/ExpenseGroupExpenseList'
@@ -19,33 +19,44 @@ import { withRouter } from 'react-router-dom'
 import { Button, Grid, ButtonGroup } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 class ExpenseGroupDetail extends Component {
+    
   async componentDidMount() {
-    this.initialize(this.props)
+    await this.initialize()
   }
 
   async componentDidUpdate(prevProps) {
-    this.initialize(this.props, prevProps)
+    await this.initialize(prevProps)
   }
 
-  async initialize(props, prevProps) {
-    let { web3, contract, networkId } = props
-    const address = props.match.params.contractAddress
-
-    if (web3 && !contract) {
-      this.loadData(props)
-    }
-
-    if (web3 && contract && address !== contract.options.address) {
-      this.loadData(props)
-    }
-
-    if (prevProps && prevProps.networkId && prevProps.networkId !== networkId) {
-      this.loadData(props)
+  async initialize(prevProps) {
+    if (
+      this.isContractNotLoaded() ||
+      this.hasContractChanged() ||
+      this.hasNetworkChanged(prevProps)
+    ) {
+      this.reload(this.props)
     }
   }
 
-  async loadData(props) {
-    let { dispatch, web3, contract, account } = props
+  isContractNotLoaded() {
+    const { web3, contract } = this.props
+    return web3 && !contract
+  }
+
+  hasContractChanged() {
+    const { web3, contract } = this.props
+    const address = this.props.match.params.contractAddress
+    return web3 && contract && address !== contract.options.address
+  }
+
+  hasNetworkChanged(prevProps) {
+    const { networkId } = this.props
+    return prevProps && prevProps.networkId && prevProps.networkId !== networkId
+  }
+
+  async reload(props) {
+    let { contract } = props
+    const { dispatch, web3, account } = props
     const address = props.match.params.contractAddress
     contract = await loadExpenseGroupContract(dispatch, web3, address)
     await loadMembers(dispatch, contract)

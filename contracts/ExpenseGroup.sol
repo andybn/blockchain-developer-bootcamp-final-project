@@ -144,6 +144,7 @@ contract ExpenseGroup is Pausable {
         return memberAddresses.length;
     }
 
+    /// @notice Returns the payees for a expense
     function getPayees(uint256 expenseId) public view returns(address[] memory)  {
         return expenses[expenseId].payees;
     }

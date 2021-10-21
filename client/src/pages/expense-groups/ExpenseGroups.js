@@ -14,29 +14,29 @@ import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupLi
 import { Button, Grid, ButtonGroup } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 class ExpenseGroups extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { networkChanged: false }
-  }
-
+ 
   async componentDidMount() {
-    this.initialize(this.props)
+    this.initialize()
   }
 
   async componentDidUpdate(prevProps) {
-    this.initialize(this.props, prevProps)
+    this.initialize(prevProps)
   }
 
-  async initialize(props, prevProps) {
-    let { web3, factoryContract, networkId } = props
-
-    if (web3 && !factoryContract) {
-      this.loadData(props)
+  async initialize(prevProps) {
+    if (this.isFactoryContractNotLoaded() || this.hasNetworkChanged(prevProps)) {
+      this.loadData(this.props)
     }
+  }
 
-    if (prevProps && prevProps.networkId && prevProps.networkId !== networkId) {
-      this.loadData(props)
-    }
+  isFactoryContractNotLoaded() {
+    const { web3, factoryContract } = this.props
+    return web3 && !factoryContract
+  }
+
+  hasNetworkChanged(prevProps) {
+    const { networkId } = this.props
+    return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
   async loadData(props) {

@@ -15,29 +15,46 @@ import {
   accountSelector,
 } from '../../redux/selectors'
 class ExpenseGroupExpenseAdd extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { contractChanged: false }
-  }
-
   async componentDidMount() {
-    this.initialize(this.props)
+    this.initialize()
   }
 
-  async componentDidUpdate() {
-    this.initialize(this.props)
+  async componentDidUpdate(prevProps) {
+    this.initialize(prevProps)
   }
 
-  async initialize(props) {
-    const { dispatch, web3, contract } = props
-
-    const address = props.match.params.contractAddress
-    if ((web3 && !contract) || (web3 && address !== contract.options.address)) {
-      contract = await loadExpenseGroupContract(dispatch, web3, address)
-      await loadMembers(dispatch, contract)
+  async initialize(prevProps) {
+    if (
+      this.isContractNotLoaded() ||
+      this.hasContractChanged() ||
+      this.hasNetworkChanged(prevProps)
+    ) {
+      this.reload()
     }
+  }
 
-    //TODO: Add support for network changed
+  isContractNotLoaded() {
+    const { web3, contract } = this.props
+    return web3 && !contract
+  }
+
+  hasContractChanged() {
+    const { web3, contract } = this.props
+    const address = this.props.match.params.contractAddress
+    return web3 && contract && address !== contract.options.address
+  }
+
+  hasNetworkChanged(prevProps) {
+    const { networkId } = this.props
+    return prevProps && prevProps.networkId && prevProps.networkId !== networkId
+  }
+
+  async reload() {
+    const { dispatch, web3 } = this.props
+    let { contract } = this.props
+    const address = this.props.match.params.contractAddress
+    contract = await loadExpenseGroupContract(dispatch, web3, address)
+    await loadMembers(dispatch, contract)
   }
 
   render() {
