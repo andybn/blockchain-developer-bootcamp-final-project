@@ -24,7 +24,6 @@ import { Grid } from '@material-ui/core'
 class ExpenseGroupDetail extends Component {
   async componentDidMount() {
     await this.initialize()
-    this.setState({ reloading: false })
   }
 
   async componentDidUpdate(prevProps) {
@@ -32,10 +31,13 @@ class ExpenseGroupDetail extends Component {
   }
 
   async initialize(prevProps) {
-    if (
-      this.isContractNotLoaded() ||
+    
+    const { loading } = this.props
+
+    if (      
+      (this.isContractNotLoaded() ||
       this.hasContractChanged() ||
-      this.hasNetworkChanged(prevProps)
+      this.hasNetworkChanged(prevProps)) && !loading
     ) {    
       this.reload(this.props)
     }
