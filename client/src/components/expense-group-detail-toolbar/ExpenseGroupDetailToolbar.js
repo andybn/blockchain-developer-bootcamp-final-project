@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
 const ExpenseGroupDetailToolbar = (address) => {
+  
   return (
     <ButtonGroup
       color="primary"
@@ -11,7 +12,7 @@ const ExpenseGroupDetailToolbar = (address) => {
     >
       <Button
         component={Link}
-        to={`/expense-group/${address}/expenses/add`}
+        to={`/expense-group/${address.address}/expenses/add`}
         variant="outlined"
         color="inherit"
       >
@@ -19,7 +20,7 @@ const ExpenseGroupDetailToolbar = (address) => {
       </Button>
       <Button
         component={Link}
-        to={`/expense-group/${address}/members/add`}
+        to={`/expense-group/${address.address}/members/add`}
         variant="outlined"
         color="inherit"
       >
