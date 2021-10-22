@@ -73,9 +73,7 @@ class ExpenseGroupDetail extends Component {
   render() {
     const { members, expenses, loading } = this.props
     const address = this.props.match.params.contractAddress
-    console.log('here');
-    console.dir(address);
-
+ 
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
