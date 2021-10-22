@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { Button, Grid, ButtonGroup } from '@material-ui/core'
 class ExpenseGroupMemberAdd extends Component {
   render() {
-    const address = this.props.address
+    const address = this.props.match.params.contractAddress
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
