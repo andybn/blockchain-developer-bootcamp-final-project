@@ -7,7 +7,7 @@ import ExpenseGroupAdd from './pages/expense-group-add/ExpenseGroupAdd'
 import ExpenseGroupExpenseAdd from './pages/expense-group-expense-add/ExpenseGroupExpenseAdd'
 import ExpenseGroupMemberAdd from './pages/expense-group-member-add/ExpenseGroupMemberAdd'
 import ExpenseGroups from './pages/expense-groups/ExpenseGroups'
-import { LoopCircleLoading } from 'react-loadingg'
+import { BlockLoading } from 'react-loadingg'
 import { loadingSelector } from './redux/selectors'
 class App extends Component {
   render() {
@@ -16,8 +16,7 @@ class App extends Component {
     return (
       <div>
         <Navbar />
-        {loading && <LoopCircleLoading />}
-
+        {loading && <BlockLoading />}
         <div className="App">
           <header className="App-header">
             <Switch>
