@@ -13,7 +13,6 @@ const Navbar = () => {
         <IconButton
           edge="start"        
           color="inherit"
-          aria-label="menu"
         >
           <AssesmentIcon />
         </IconButton>
