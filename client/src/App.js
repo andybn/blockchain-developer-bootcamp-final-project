@@ -13,7 +13,7 @@ import Alert from '@material-ui/lab/Alert';
 class App extends Component {
   render() {
     const { loading } = this.props
-    const showAlert = true;
+    const showAlert = false;
     //TODO: Convert to custom Alert component exposing text, severity and feedback
     //TODO: Add new ShowAlert interaction, action and reducer including text and severity
     //TODO: Add new CloseAlert interaction, action and reducer to clear the current alert 
