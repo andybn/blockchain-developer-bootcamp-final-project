@@ -1,18 +1,26 @@
 import React from 'react'
-import { AppBar, Toolbar } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import Box from '@material-ui/core/Box'
 import BlockchainConnector from '../blockchain-connector/BlockchainConnector'
-
+import AssesmentIcon from '@material-ui/icons/Assessment'
 const Navbar = () => {
   const classes = useStyles()
   return (
     <AppBar position="static">
       <Toolbar>
-        <Box display="flex" flexGrow={1}>
+        <IconButton
+          edge="start"        
+          color="inherit"
+          aria-label="menu"
+        >
+          <AssesmentIcon />
+        </IconButton>
+        <Typography variant="h6">Go dutch!</Typography>
+        <Box display="flex" flexGrow={1} marginLeft="40px">
           <Link className={classes.link} to="/">
-            Go dutch!
+            Expense groups
           </Link>
         </Box>
         <BlockchainConnector></BlockchainConnector>

@@ -26,7 +26,7 @@ class BlockchainConnector extends Component {
         <IconButton edge="start" color="inherit">
           <WalletIcon />
           <Typography variant="h6">
-            <span>{!account ? 'Connect' : `Account: ${account}`}</span>
+            <span>{!account ? 'Connect' : 'Connected'}</span>
             {/* Pending to show NetworkId */}
           </Typography>
         </IconButton>
