@@ -2,18 +2,38 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import { loadWeb3, loadAccount, changeNetwork } from '../../redux/interactions'
-import { accountSelector, web3Selector } from '../../redux/selectors'
+import {
+  accountSelector,
+  networkSelector,
+  web3Selector,
+} from '../../redux/selectors'
 import {
   subscribeToAccountsChanging,
   subscribeToNetworkChanging,
 } from '../../redux/subscriptions'
-import { IconButton, Typography } from '@material-ui/core'
+import {
+  IconButton,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from '@material-ui/core'
 import WalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 
 class BlockchainConnector extends Component {
+  state = {
+    open: false,
+  }
+
+  openDialog() {
+    this.setState({ open: true })
+  }
+
   render() {
-    const { dispatch, account } = this.props
+    const { dispatch, account, networkId } = this.props
 
     const connectBlockchain = async (e) => {
       e.preventDefault()
@@ -27,27 +47,48 @@ class BlockchainConnector extends Component {
     }
 
     const showWalletInfo = () => {
-        //TODO: Add new route to show current network, account 
-        console.log(account);
-        alert(account);
-    };
+      this.setState({ open: true })
+    }
+
+    const handleClose = () => {
+      this.setState({ open: false })
+    }
 
     return (
-      <div onClick={connectBlockchain}>
+      <div >
         {!account && (
-          <IconButton edge="start" color="inherit">
-            <AddCircleOutlineIcon />
-            <Typography variant="h6">
-              <span>Connect</span>
-              {/* Pending to show NetworkId */}
-            </Typography>
-          </IconButton>
+          <div>
+            <IconButton edge="start" color="inherit" onClick={connectBlockchain}>
+              <AddCircleOutlineIcon />
+              <Typography variant="h6">
+                <span>Connect</span>
+              </Typography>
+            </IconButton>
+          </div>
         )}
+
         {account && (
           <IconButton edge="start" color="inherit" onClick={showWalletInfo}>
             <WalletIcon />
           </IconButton>
         )}
+
+        <Dialog open={this.state.open} onClose={handleClose}>
+          <DialogTitle>Current connection</DialogTitle>
+          <DialogContent>
+            <div>
+              <span style={{ fontWeight: 'bold' }}> Account: </span> {account}
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <span style={{ fontWeight: 'bold' }}> Network: </span> {networkId}
+            </div>
+          </DialogContent>
+          <DialogActions>        
+            <Button onClick={handleClose} color="primary" autoFocus>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     )
   }
@@ -57,6 +98,7 @@ function mapStateToProps(state) {
   return {
     account: accountSelector(state),
     web3: web3Selector(state),
+    networkId: networkSelector(state),
   }
 }
 
