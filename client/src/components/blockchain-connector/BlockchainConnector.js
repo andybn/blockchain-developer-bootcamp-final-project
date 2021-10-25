@@ -52,7 +52,7 @@ class BlockchainConnector extends Component {
 
       showFeedback(dispatch, {
         text: 'Wallet successfully connected',
-        type: 'Success',
+        type: 'success',
         visible: true,
       })
     }
@@ -94,7 +94,7 @@ class BlockchainConnector extends Component {
             <div>
               <span style={{ fontWeight: 'bold' }}> Account: </span> {account}
             </div>
-            <div style={{ marginBottom: '10px' }}>
+            <div>
               <span style={{ fontWeight: 'bold' }}> Network: </span> {networkId}
             </div>
           </DialogContent>
