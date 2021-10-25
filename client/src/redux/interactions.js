@@ -10,11 +10,11 @@ import {
   expenseGroupExpenseAdded,
   networkChanged,
   loadingFlagSet,
-  feedbackShown
+  feedbackShown,
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
-import history from '../common/history';
+import history from '../common/history'
 
 export const loadWeb3 = async (dispatch) => {
   const web3 = await getWeb3()
@@ -35,6 +35,7 @@ export const changeNetwork = async (dispatch, networkId) => {
 }
 
 export const loadFactoryContract = async (dispatch, web3) => {
+  
   const networkId = await web3.eth.net.getId()
   const deployedNetwork = ExpenseGroupFactoryContract.networks[networkId]
 
@@ -43,7 +44,12 @@ export const loadFactoryContract = async (dispatch, web3) => {
     deployedNetwork && deployedNetwork.address,
   )
 
-  dispatch(factoryContractLoaded(instance))
+  if (instance.options.address) {
+    dispatch(factoryContractLoaded(instance))   
+  } else {  
+    throw new Error('Error loading factory contract');
+  }
+
   return instance
 }
 
@@ -89,7 +95,6 @@ export const loadExpenseGroupContract = async (
   web3,
   contractAddress,
 ) => {
-  
   const networkId = await web3.eth.net.getId()
   const deployedNetwork = ExpenseGroupContract.networks[networkId]
 
@@ -119,27 +124,31 @@ export const loadMembers = async (dispatch, contract) => {
 
 export const loadExpenses = async (dispatch, contract, account) => {
   let expenses = []
-  
+
   const expensesCount = await contract.methods.numExpenses().call()
 
   for (let i = 0; i < expensesCount; i++) {
     const expense = await contract.methods.expenses(i).call()
     expense.identifier = i
-    expense.approvals = await contract.methods.getNumberOfApprovals(i)    
-    expense.valueDate = new Date(+expense.valueDate * 1000).toDateString();
-    expense.creationDate = new Date(+expense.creationDate * 1000).toDateString();
-    
-    const payer = expense.payer;
-    const payerName = await contract.methods.getMemberName(expense.payer).call();
+    expense.approvals = await contract.methods.getNumberOfApprovals(i)
+    expense.valueDate = new Date(+expense.valueDate * 1000).toDateString()
+    expense.creationDate = new Date(+expense.creationDate * 1000).toDateString()
+
+    const payer = expense.payer
+    const payerName = await contract.methods.getMemberName(expense.payer).call()
     expense.payerWithName = { address: payer, name: payerName }
 
     const payeesAddresses = await contract.methods.getPayees(i).call()
-    expense.payees = await Promise.all(payeesAddresses.map( async p => ({ address: p, name: (await contract.methods.getMemberName(p).call())})))
+    expense.payees = await Promise.all(
+      payeesAddresses.map(async (p) => ({
+        address: p,
+        name: await contract.methods.getMemberName(p).call(),
+      })),
+    )
 
-    expense.isApprovedByAccount = account ? await contract
-      .methods
-      .getApproval(i, String(account))
-      .call() : false;
+    expense.isApprovedByAccount = account
+      ? await contract.methods.getApproval(i, String(account)).call()
+      : false
     expenses.push(expense)
   }
 
@@ -155,7 +164,7 @@ export const addExpense = async (dispatch, contract, account, expense) => {
 
   dispatch(expenseGroupExpenseAdded(expense))
 
-  await loadExpenses(dispatch, contract, account);
+  await loadExpenses(dispatch, contract, account)
 
   history.push(`/expense-group/${contract.options.address}`)
 }
@@ -166,7 +175,6 @@ export const setLoadingFlag = async (dispatch, loading) => {
 }
 
 export const showFeedback = async (dispatch, options) => {
-  setLoadingFlag(dispatch, false)
   dispatch(feedbackShown(options))
   return options
 }

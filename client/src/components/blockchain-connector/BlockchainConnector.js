@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import {
   loadWeb3,
   loadAccount,
-  changeNetwork,
-  showFeedback,
+  changeNetwork
 } from '../../redux/interactions'
 import {
   accountSelector,
@@ -50,11 +49,6 @@ class BlockchainConnector extends Component {
       subscribeToAccountsChanging(dispatch, web3)
       subscribeToNetworkChanging(dispatch, web3)
 
-      showFeedback(dispatch, {
-        text: 'Wallet successfully connected',
-        type: 'success',
-        visible: true,
-      })
     }
 
     const showWalletInfo = () => {

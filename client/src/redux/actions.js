@@ -71,7 +71,7 @@ export function loadingFlagSet(loading) {
 export function feedbackShown(options) {
   return {
     type: 'FEEDBACK_SHOWN',
-    options
+    options,
   }
 }
 

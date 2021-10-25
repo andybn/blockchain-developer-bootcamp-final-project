@@ -18,7 +18,8 @@ class App extends Component {
      <div>
         <Navbar />                
         <FeedbackBar />
-        {loading && <BlockLoading />}
+        {(loading)
+         && <BlockLoading />}
         <div className="App">     
             <Switch>
               <Route exact path="/" component={ExpenseGroups} />
@@ -51,7 +52,7 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    loading: loadingSelector(state),
+    loading: loadingSelector(state)
   }
 }
 

@@ -4,13 +4,14 @@ import {
   loadExpenseGroupContracts,
   loadFactoryContract,
   setLoadingFlag,
+  showFeedback,
 } from '../../redux/interactions'
 import {
   factoryContractSelector,
   expenseGroupContractsSelector,
   web3Selector,
   networkSelector,
-  loadingSelector,
+  loadingSelector
 } from '../../redux/selectors'
 import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupList'
 import { Grid } from '@material-ui/core'
@@ -25,14 +26,20 @@ class ExpenseGroups extends Component {
   }
 
   async initialize(prevProps) {
-    const { loading } = this.props
+    const { loading, dispatch } = this.props
+
 
     if (
       (this.isFactoryContractNotLoaded() ||
         this.hasNetworkChanged(prevProps)) &&
       !loading
-    ) {
-      this.loadData(this.props)
+    ) {     
+      setLoadingFlag(dispatch, true)  
+      await this.loadData()     
+    }
+
+    if(loading && !this.isFactoryContractNotLoaded() && !this.hasNetworkChanged(prevProps)) {
+      setLoadingFlag(dispatch, false)  
     }
   }
 
@@ -46,12 +53,24 @@ class ExpenseGroups extends Component {
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
-  async loadData(props) {
-    let { web3, dispatch, factoryContract } = props
-    setLoadingFlag(dispatch, true)
-    factoryContract = await loadFactoryContract(dispatch, web3)
-    await loadExpenseGroupContracts(dispatch, factoryContract, web3)
-    setLoadingFlag(dispatch, false)
+  async loadData() {
+    let { web3, dispatch, factoryContract } = this.props
+
+    try {
+      factoryContract = await loadFactoryContract(dispatch, web3)
+      await loadExpenseGroupContracts(dispatch, factoryContract, web3)
+      showFeedback(dispatch, {
+        text: 'Wallet connected',
+        type: 'success',
+        visible: true,
+      })
+    } catch (error) {
+      showFeedback(dispatch, {
+        text: 'Error loading factory contract',
+        type: 'error',
+        visible: true,
+      })
+    }
   }
 
   render() {
@@ -79,7 +98,7 @@ function mapStateToProps(state) {
     factoryContract: factoryContractSelector(state),
     web3: web3Selector(state),
     networkId: networkSelector(state),
-    loading: loadingSelector(state),
+    loading: loadingSelector(state)
   }
 }
 
