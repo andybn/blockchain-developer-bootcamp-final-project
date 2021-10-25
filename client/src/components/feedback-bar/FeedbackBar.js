@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import Alert from '@material-ui/lab/Alert'
 import { showFeedback } from '../../redux/interactions'
 import { feedbackSelector } from '../../redux/selectors'
-//import Expire from '../expire/Expire'
+import Expire from '../expire/Expire'
 class FeedbackBar extends Component {
   render() {
     const { feedback, dispatch } = this.props
@@ -24,7 +24,7 @@ class FeedbackBar extends Component {
       <div>
         {feedback && feedback.visible && (
           <div>
-            {/* <Expire delay={5000}> */}
+            <Expire delay={6500}>
               <Alert
                 variant="filled"
                 onClose={handleClose}
@@ -32,7 +32,7 @@ class FeedbackBar extends Component {
               >
                 {feedback.text}
               </Alert>
-            {/* </Expire> */}
+            </Expire>
           </div>
         )}
       </div>

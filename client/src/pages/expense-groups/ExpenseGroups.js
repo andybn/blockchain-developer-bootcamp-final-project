@@ -64,6 +64,12 @@ class ExpenseGroups extends Component {
     try {      
       factoryContract = await loadFactoryContract(dispatch, web3)
       await loadExpenseGroupContracts(dispatch, factoryContract, web3)
+      showFeedback(dispatch, {
+        text: 'Expense group contract list successfully loaded',
+        type: 'success',
+        visible: true,
+      })
+      
     } catch (error) {
       showFeedback(dispatch, {
         text: error.message,
@@ -74,7 +80,7 @@ class ExpenseGroups extends Component {
   }
 
   render() {
-    const { expenseGroups,loading } = this.props
+    const { expenseGroups, loading } = this.props
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
