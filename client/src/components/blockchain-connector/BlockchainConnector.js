@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
-import { loadWeb3, loadAccount, changeNetwork } from '../../redux/interactions'
+import {
+  loadWeb3,
+  loadAccount,
+  changeNetwork,
+  showFeedback,
+} from '../../redux/interactions'
 import {
   accountSelector,
   networkSelector,
@@ -37,13 +42,19 @@ class BlockchainConnector extends Component {
 
     const connectBlockchain = async (e) => {
       e.preventDefault()
-      //TODO: Add error handling and text to install metamask if no provider is detected
+
       const web3 = await loadWeb3(dispatch)
       const networkId = await web3.eth.net.getId()
       await loadAccount(dispatch, web3)
       await changeNetwork(dispatch, networkId)
       subscribeToAccountsChanging(dispatch, web3)
       subscribeToNetworkChanging(dispatch, web3)
+
+      showFeedback(dispatch, {
+        text: 'Wallet successfully connected',
+        type: 'Success',
+        visible: true,
+      })
     }
 
     const showWalletInfo = () => {
@@ -55,10 +66,14 @@ class BlockchainConnector extends Component {
     }
 
     return (
-      <div >
+      <div>
         {!account && (
           <div>
-            <IconButton edge="start" color="inherit" onClick={connectBlockchain}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={connectBlockchain}
+            >
               <AddCircleOutlineIcon />
               <Typography variant="h6">
                 <span>Connect</span>
@@ -83,7 +98,10 @@ class BlockchainConnector extends Component {
               <span style={{ fontWeight: 'bold' }}> Network: </span> {networkId}
             </div>
           </DialogContent>
-          <DialogActions>        
+          <DialogActions>
+            <Button color="primary" onClick={() => window.location.reload(false)}>
+              Restart
+            </Button>
             <Button onClick={handleClose} color="primary" autoFocus>
               Close
             </Button>

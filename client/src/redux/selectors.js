@@ -36,3 +36,6 @@ export const expenseGroupExpensesSelector = createSelector(expenses, (a) => a)
 const loading = (state) => get(state, 'common.loading', null)
 export const loadingSelector = createSelector(loading, (a) => a)
 
+const feedback = (state) => get(state, 'common.feedback', null)
+export const feedbackSelector = createSelector(feedback, (a) => a)
+

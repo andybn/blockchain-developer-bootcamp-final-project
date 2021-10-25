@@ -9,7 +9,8 @@ import {
   expenseGroupExpensesLoaded,
   expenseGroupExpenseAdded,
   networkChanged,
-  loadingFlagSet
+  loadingFlagSet,
+  feedbackShown
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
@@ -124,8 +125,7 @@ export const loadExpenses = async (dispatch, contract, account) => {
   for (let i = 0; i < expensesCount; i++) {
     const expense = await contract.methods.expenses(i).call()
     expense.identifier = i
-    expense.approvals = await contract.methods.getNumberOfApprovals(i)
-    //TODO: Extract to common util
+    expense.approvals = await contract.methods.getNumberOfApprovals(i)    
     expense.valueDate = new Date(+expense.valueDate * 1000).toDateString();
     expense.creationDate = new Date(+expense.creationDate * 1000).toDateString();
     
@@ -155,9 +155,6 @@ export const addExpense = async (dispatch, contract, account, expense) => {
 
   dispatch(expenseGroupExpenseAdded(expense))
 
-  //TODO: Needs to wait for confirmation, get the event and update UI 
-  //TODO: Add also spinner!
-
   await loadExpenses(dispatch, contract, account);
 
   history.push(`/expense-group/${contract.options.address}`)
@@ -166,4 +163,10 @@ export const addExpense = async (dispatch, contract, account, expense) => {
 export const setLoadingFlag = async (dispatch, loading) => {
   dispatch(loadingFlagSet(loading))
   return loading
+}
+
+export const showFeedback = async (dispatch, options) => {
+  setLoadingFlag(dispatch, false)
+  dispatch(feedbackShown(options))
+  return options
 }

@@ -36,6 +36,8 @@ function common(state = {}, action) {
   switch (action.type) {
     case 'LOADING_FLAG_SET':
       return { ...state, loading: action.loading }
+    case 'FEEDBACK_SHOWN':
+      return { ...state, feedback: action.options }
     default:
       return state
   }

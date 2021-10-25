@@ -9,20 +9,15 @@ import ExpenseGroupMemberAdd from './pages/expense-group-member-add/ExpenseGroup
 import ExpenseGroups from './pages/expense-groups/ExpenseGroups'
 import { BlockLoading } from 'react-loadingg'
 import { loadingSelector } from './redux/selectors'
-import Alert from '@material-ui/lab/Alert';
+import FeedbackBar from './components/feedback-bar/FeedbackBar'
 class App extends Component {
   render() {
     const { loading } = this.props
-    const showAlert = false;
-    //TODO: Convert to custom Alert component exposing text, severity and feedback
-    //TODO: Add new ShowAlert interaction, action and reducer including text and severity
-    //TODO: Add new CloseAlert interaction, action and reducer to clear the current alert 
-    //TODO: The reducer: Should disable loading flag. Set new object field CurrentAlert(Visible, Severity and Text)
-
+    
     return (     
      <div>
-        <Navbar />        
-        {showAlert && <Alert variant="filled" onClose={() => {}} severity="error">This is a warning alert — check it out!</Alert> }     
+        <Navbar />                
+        <FeedbackBar />
         {loading && <BlockLoading />}
         <div className="App">     
             <Switch>

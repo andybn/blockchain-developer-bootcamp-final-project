@@ -64,6 +64,14 @@ export function expenseGroupExpenseAdded(expense) {
 export function loadingFlagSet(loading) {
   return {
     type: 'LOADING_FLAG_SET',
-    loading
+    loading,
   }
 }
+
+export function feedbackShown(options) {
+  return {
+    type: 'FEEDBACK_SHOWN',
+    options
+  }
+}
+
