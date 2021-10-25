@@ -17,6 +17,8 @@ import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupLi
 import { Grid } from '@material-ui/core'
 import ExpenseGroupsToolbar from '../../components/expense-groups-toolbar/ExpenseGroupsToolbar'
 class ExpenseGroups extends Component {
+  
+  
   async componentDidMount() {
     this.initialize()
   }
@@ -26,26 +28,29 @@ class ExpenseGroups extends Component {
   }
 
   async initialize(prevProps) {
-    const { loading, dispatch } = this.props
+    
+    const { web3, dispatch,loading } = this.props
 
-
-    if (
-      (this.isFactoryContractNotLoaded() ||
-        this.hasNetworkChanged(prevProps)) &&
-      !loading
-    ) {     
-      setLoadingFlag(dispatch, true)  
-      await this.loadData()     
+    if(prevProps && prevProps.web3 && !web3) {
+      return;
     }
-
-    if(loading && !this.isFactoryContractNotLoaded() && !this.hasNetworkChanged(prevProps)) {
-      setLoadingFlag(dispatch, false)  
+    
+    if (
+      (this.isFactoryContractNotLoaded() 
+      || this.hasNetworkChanged(prevProps)      
+      ) 
+    ) {   
+      if(!loading) {
+        setLoadingFlag(dispatch, true)    
+        await this.loadData()    
+        setLoadingFlag(dispatch, false)          
+      }
     }
   }
 
   isFactoryContractNotLoaded() {
-    const { web3, factoryContract } = this.props
-    return web3 && !factoryContract
+    const { web3, factoryContract, expenseGroups } = this.props
+    return web3 && !factoryContract && !expenseGroups
   }
 
   hasNetworkChanged(prevProps) {
@@ -56,17 +61,12 @@ class ExpenseGroups extends Component {
   async loadData() {
     let { web3, dispatch, factoryContract } = this.props
 
-    try {
+    try {      
       factoryContract = await loadFactoryContract(dispatch, web3)
       await loadExpenseGroupContracts(dispatch, factoryContract, web3)
-      showFeedback(dispatch, {
-        text: 'Wallet connected',
-        type: 'success',
-        visible: true,
-      })
     } catch (error) {
       showFeedback(dispatch, {
-        text: 'Error loading factory contract',
+        text: error.message,
         type: 'error',
         visible: true,
       })
@@ -74,7 +74,7 @@ class ExpenseGroups extends Component {
   }
 
   render() {
-    const { expenseGroups, loading } = this.props
+    const { expenseGroups,loading } = this.props
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>

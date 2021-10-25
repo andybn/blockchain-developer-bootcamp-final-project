@@ -47,7 +47,7 @@ export const loadFactoryContract = async (dispatch, web3) => {
   if (instance.options.address) {
     dispatch(factoryContractLoaded(instance))   
   } else {  
-    throw new Error('Error loading factory contract');
+    throw new Error('Error loading factory contract. Check contract deployment on current network.');
   }
 
   return instance
