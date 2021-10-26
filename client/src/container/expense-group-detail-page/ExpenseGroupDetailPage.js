@@ -1,41 +1,46 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { Button, Grid, ButtonGroup } from '@material-ui/core'
 import {
   loadExpenseGroupContract,
-  addExpense,
+  loadExpenses,
   loadMembers,
 } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
   expenseGroupMembersSelector,
+  expenseGroupExpensesSelector,
   web3Selector,
-  loadingSelector,
-  errorSelector,
   accountSelector,
+  networkSelector,
+  errorSelector,
+  loadingSelector
 } from '../../redux/selectors'
-class ExpenseGroupExpenseAdd extends Component {
+import ExpenseGroupMemberList from '../../component/expense-group-member-list/ExpenseGroupMemberList'
+import ExpenseGroupExpenseList from '../../component/expense-group-expense-list/ExpenseGroupExpenseList'
+import ExpenseGroupDetailToolbar from '../../component/expense-group-detail-toolbar/ExpenseGroupDetailToolbar'
+import { withRouter } from 'react-router-dom'
+import { Grid } from '@material-ui/core'
+
+class ExpenseGroupDetailPage extends Component {
   async componentDidMount() {
-    this.initialize()
+    await this.initialize()
   }
 
   async componentDidUpdate(prevProps) {
-    this.initialize(prevProps)
+    await this.initialize(prevProps)
   }
 
   async initialize(prevProps) {
-    const { loading, account, error } = this.props
+    
+    const { loading, error, account } = this.props
 
     if (
       (this.isContractNotLoaded() ||
         this.hasContractChanged() ||
         this.hasNetworkChanged(prevProps)) &&
-      !loading &&
-      !error &&
-      account
+      (!loading && !error && account)
     ) {
-      this.loadData()
+      this.loadData(this.props)
     }
   }
 
@@ -55,52 +60,42 @@ class ExpenseGroupExpenseAdd extends Component {
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
-  async loadData() {
+  async loadData(props) {
     try {
-      const { dispatch, web3 } = this.props
-      let { contract } = this.props
-      const address = this.props.match.params.contractAddress
+      let { contract } = props
+      const { dispatch, web3, account } = props
+      const address = props.match.params.contractAddress
       contract = await loadExpenseGroupContract(dispatch, web3, address)
       await loadMembers(dispatch, contract)
+      await loadExpenses(dispatch, contract, account)
     } catch (error) {
       console.log(error)
     }
   }
 
   render() {
+    const { members, expenses, loading } = this.props
     const address = this.props.match.params.contractAddress
-
-    const { dispatch, contract, account, members } = this.props
-
-    const prepareExpenseForInsertion = async (e) => {
-      e.preventDefault()
-
-      const expense = {
-        name: 'test',
-        amount: 5000,
-        valueDate: Date.now(),
-        payees: [String(members[0].memberAddress)],
-      }
-
-      await addExpense(dispatch, contract, account, expense)
-    }
 
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
-          <ButtonGroup
-            color="primary"
-            aria-label="outlined primary button group"
-          >
-            <Button
-              onClick={prepareExpenseForInsertion}
-              variant="outlined"
-              color="inherit"
-            >
-              [ADD EXPENSE TO EXPENSE GROUP {address} ]
-            </Button>
-          </ButtonGroup>
+          <ExpenseGroupDetailToolbar
+            address={address}
+          ></ExpenseGroupDetailToolbar>
         </Grid>
+        {!loading && (
+          <Grid item xs={10}>
+            <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
+          </Grid>
+        )}
+        {!loading && (
+          <Grid item xs={10}>
+            <ExpenseGroupExpenseList
+              expenses={expenses}
+            ></ExpenseGroupExpenseList>
+          </Grid>
+        )}
       </Grid>
     )
   }
@@ -112,9 +107,11 @@ function mapStateToProps(state) {
     web3: web3Selector(state),
     account: accountSelector(state),
     members: expenseGroupMembersSelector(state),
+    expenses: expenseGroupExpensesSelector(state),
+    networkId: networkSelector(state),
     loading: loadingSelector(state),
     error: errorSelector(state),
   }
 }
 
-export default withRouter(connect(mapStateToProps)(ExpenseGroupExpenseAdd))
+export default withRouter(connect(mapStateToProps)(ExpenseGroupDetailPage))

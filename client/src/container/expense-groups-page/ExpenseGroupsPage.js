@@ -11,12 +11,12 @@ import {
   networkSelector,
   loadingSelector,
   errorSelector,
-  accountSelector
+  accountSelector,
 } from '../../redux/selectors'
-import ExpenseGroupList from '../../components/expense-group-list/ExpenseGroupList'
+import ExpenseGroupList from '../../component/expense-group-list/ExpenseGroupList'
 import { Grid } from '@material-ui/core'
-import ExpenseGroupsToolbar from '../../components/expense-groups-toolbar/ExpenseGroupsToolbar'
-class ExpenseGroups extends Component {
+import ExpenseGroupsToolbar from '../../component/expense-groups-toolbar/ExpenseGroupsToolbar'
+class ExpenseGroupsPage extends Component {
   async componentDidMount() {
     this.initialize()
   }
@@ -30,9 +30,10 @@ class ExpenseGroups extends Component {
 
     if (
       (this.isFactoryContractNotLoaded() ||
-        this.hasNetworkChanged(prevProps)
-        ) &&
-      (!loading && !error && account)     
+        this.hasNetworkChanged(prevProps)) &&
+      !loading &&
+      !error &&
+      account
     ) {
       await this.loadData()
     }
@@ -59,18 +60,18 @@ class ExpenseGroups extends Component {
   }
 
   render() {
-    const { expenseGroups } = this.props
+    const { expenseGroups, loading } = this.props
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
           <ExpenseGroupsToolbar></ExpenseGroupsToolbar>
         </Grid>
         <Grid item xs={10}>
-          {/* {!loading && ( */}
-          <ExpenseGroupList
-            expenseGroupContracts={expenseGroups}
-          ></ExpenseGroupList>
-          {/* )} */}
+          {!loading && (
+            <ExpenseGroupList
+              expenseGroupContracts={expenseGroups}
+            ></ExpenseGroupList>
+          )}
         </Grid>
       </Grid>
     )
@@ -85,8 +86,8 @@ function mapStateToProps(state) {
     networkId: networkSelector(state),
     loading: loadingSelector(state),
     error: errorSelector(state),
-    account: accountSelector(state)
+    account: accountSelector(state),
   }
 }
 
-export default connect(mapStateToProps)(ExpenseGroups)
+export default connect(mapStateToProps)(ExpenseGroupsPage)

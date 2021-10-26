@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import Box from '@material-ui/core/Box'
-import BlockchainConnector from '../blockchain-connector/BlockchainConnector'
+import BlockchainConnector from '../../container/blockchain-connector/BlockchainConnector'
 import AssesmentIcon from '@material-ui/icons/Assessment'
 const Navbar = () => {
   const classes = useStyles()

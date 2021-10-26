@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
-import Navbar from './components/navbar/Navbar'
-import ExpenseGroupDetail from './pages/expense-group-detail/ExpenseGroupDetail'
-import ExpenseGroupAdd from './pages/expense-group-add/ExpenseGroupAdd'
-import ExpenseGroupExpenseAdd from './pages/expense-group-expense-add/ExpenseGroupExpenseAdd'
-import ExpenseGroupMemberAdd from './pages/expense-group-member-add/ExpenseGroupMemberAdd'
-import ExpenseGroups from './pages/expense-groups/ExpenseGroups'
+import Navbar from '../../component/navbar/Navbar'
+import ExpenseGroupDetailPage from '../expense-group-detail-page/ExpenseGroupDetailPage'
+import ExpenseGroupAddPage from '../expense-group-add-page/ExpenseGroupAddPage'
+import ExpenseGroupExpenseAddPage from '../expense-group-expense-add-page/ExpenseGroupExpenseAddPage'
+import ExpenseGroupMemberAddPage from '../expense-group-member-add-page/ExpenseGroupMemberAddPage'
+import ExpenseGroupsPage from '../expense-groups-page/ExpenseGroupsPage'
 import { BlockLoading } from 'react-loadingg'
-import { loadingSelector } from './redux/selectors'
-import FeedbackBar from './components/feedback-bar/FeedbackBar'
+import { loadingSelector } from '../../redux/selectors'
+import FeedbackBar from '../feedback-bar/FeedbackBar'
 class App extends Component {
   render() {
     const { loading } = this.props
@@ -22,26 +22,26 @@ class App extends Component {
          && <BlockLoading />}
         <div className="App">     
             <Switch>
-              <Route exact path="/" component={ExpenseGroups} />
+              <Route exact path="/" component={ExpenseGroupsPage} />
               <Route
                 exact
                 path="/expense-group/:contractAddress"
-                component={ExpenseGroupDetail}
+                component={ExpenseGroupDetailPage}
               />
               <Route
                 exact
                 path="/expense-groups/add"
-                component={ExpenseGroupAdd}
+                component={ExpenseGroupAddPage}
               />
               <Route
                 exact
                 path="/expense-group/:contractAddress/expenses/add"
-                component={ExpenseGroupExpenseAdd}
+                component={ExpenseGroupExpenseAddPage}
               />
               <Route
                 exact
                 path="/expense-group/:contractAddress/members/add"
-                component={ExpenseGroupMemberAdd}
+                component={ExpenseGroupMemberAddPage}
               />
             </Switch>          
         </div>        

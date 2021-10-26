@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert'
 import { showFeedback } from '../../redux/interactions'
 import { feedbackSelector } from '../../redux/selectors'
 import { errorSelector } from '../../redux/selectors'
-import Expire from '../expire/Expire'
+import Expire from '../../component/expire/Expire'
 
 class FeedbackBar extends Component {
   async componentDidUpdate(prevProps) {

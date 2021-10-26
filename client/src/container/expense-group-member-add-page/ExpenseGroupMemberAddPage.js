@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Button, ButtonGroup, Grid } from '@material-ui/core'
-class ExpenseGroupAdd extends Component {
+import { Button, Grid, ButtonGroup } from '@material-ui/core'
+class ExpenseGroupMemberAddPage extends Component {
   render() {
+    const address = this.props.match.params.contractAddress
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
@@ -11,7 +12,7 @@ class ExpenseGroupAdd extends Component {
             aria-label="outlined primary button group"
           >
             <Button variant="outlined" color="inherit">
-              [ADD NEW EXPENSE GROUP]
+              [ADD MEMBER TO EXPENSE GROUP {address} ]
             </Button>
           </ButtonGroup>
         </Grid>
@@ -20,4 +21,4 @@ class ExpenseGroupAdd extends Component {
   }
 }
 
-export default withRouter(ExpenseGroupAdd)
+export default withRouter(ExpenseGroupMemberAddPage)
