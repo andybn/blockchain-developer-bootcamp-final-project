@@ -1,15 +1,32 @@
 import getWeb3 from '../common/getWeb3'
 import {
-  web3Loaded,
-  factoryContractLoaded,
-  accountLoaded,
-  expenseGroupContractsLoaded,
-  expenseGroupContractLoaded,
-  expenseGroupMembersLoaded,
-  expenseGroupExpensesLoaded,
-  expenseGroupExpenseAdded,
-  networkChanged,
-  loadingFlagSet,
+  web3Load,
+  web3LoadSuccess,
+  web3LoadError,
+  factoryContractLoad,
+  factoryContractLoadSuccess,
+  factoryContractLoadError,
+  accountLoad,
+  accountLoadSuccess,
+  accountLoadError,
+  expenseGroupContractsLoad,
+  expenseGroupContractsLoadSuccess,
+  expenseGroupContractsLoadError,
+  expenseGroupContractLoad,
+  expenseGroupContractLoadSuccess,
+  expenseGroupContractLoadError,
+  expenseGroupMembersLoad,
+  expenseGroupMembersLoadSuccess,
+  expenseGroupMembersLoadError,
+  expenseGroupExpensesLoad,
+  expenseGroupExpensesLoadSuccess,
+  expenseGroupExpensesLoadError,
+  expenseGroupExpenseAdd,
+  expenseGroupExpenseAddSuccess,
+  expenseGroupExpenseAddError,
+  networkChange,
+  networkChangeSuccess,
+  networkChangeError,
   feedbackShown,
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
@@ -17,37 +34,80 @@ import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
 import history from '../common/history'
 
 export const loadWeb3 = async (dispatch) => {
-  const web3 = await getWeb3()
-  dispatch(web3Loaded(web3))
+  let web3
+  dispatch(web3Load())
+  try {
+    web3 = await getWeb3()
+    dispatch(web3LoadSuccess(web3))
+  } catch (error) {
+    dispatch(web3LoadError(error.message))
+  }
+
   return web3
 }
 
 export const loadAccount = async (dispatch, web3) => {
-  const accounts = await web3.eth.getAccounts()
-  const account = accounts[0]
-  dispatch(accountLoaded(account))
+  let account
+  dispatch(accountLoad())
+  try {
+    const accounts = await web3.eth.getAccounts()
+    account = accounts[0]
+    dispatch(accountLoadSuccess(account))
+  } catch (error) {
+    dispatch(accountLoadError(error.message))
+  }
+
   return account
 }
 
 export const changeNetwork = async (dispatch, networkId) => {
-  dispatch(networkChanged(networkId))
+  dispatch(networkChange(networkId))
+
+  try {
+    if (!isValidNetwork(networkId)) {
+      throw new Error('Invalid network')
+    }
+    dispatch(networkChangeSuccess(networkId))
+  } catch (error) {
+    dispatch(networkChangeError(networkId, error.message))
+  }
+
   return networkId
 }
 
+export const isValidNetwork = (networkId) => {
+  //TODO: Improve when it is deployed to testnets
+  return networkId > 20
+}
+
 export const loadFactoryContract = async (dispatch, web3) => {
-  
-  const networkId = await web3.eth.net.getId()
-  const deployedNetwork = ExpenseGroupFactoryContract.networks[networkId]
+  let instance
+  dispatch(factoryContractLoad())
 
-  const instance = new web3.eth.Contract(
-    ExpenseGroupFactoryContract.abi,
-    deployedNetwork && deployedNetwork.address,
-  )
+  try {
+    const networkId = await web3.eth.net.getId()
 
-  if (instance.options.address) {
-    dispatch(factoryContractLoaded(instance))   
-  } else {  
-    throw new Error('Error loading factory contract. Check contract deployment on current network.');
+    if (!isValidNetwork(networkId)) {
+      throw new Error('Invalid network')
+    }
+
+    const deployedNetwork = ExpenseGroupFactoryContract.networks[networkId]
+
+    instance = new web3.eth.Contract(
+      ExpenseGroupFactoryContract.abi,
+      deployedNetwork && deployedNetwork.address,
+    )
+
+    if (instance.options.address) {
+      dispatch(factoryContractLoadSuccess(instance))
+    } else {
+      throw new Error(
+        'Error loading factory contract. Check contract deployment on current network.',
+      )
+    }
+  } catch (error) {
+    dispatch(factoryContractLoadError(error.message))
+    throw error
   }
 
   return instance
@@ -59,34 +119,46 @@ export const loadExpenseGroupContracts = async (dispatch, contract, web3) => {
   //       .createExpenseGroup('SenderA', 'WorldTrip')
   //       .send({ from: accounts[0] });
 
-  const expenseGroups = await contract.methods.getExpenseGroups().call()
-
   const expenseGroupContracts = []
+  dispatch(expenseGroupContractsLoad())
 
-  for (let i = 0; i < expenseGroups.length; i++) {
-    const expenseGroupContractInstance = new web3.eth.Contract(
-      ExpenseGroupContract.abi,
-      expenseGroups[i],
-    )
+  try {
+    const expenseGroups = await contract.methods.getExpenseGroups().call()
 
-    const title = await expenseGroupContractInstance.methods.title().call()
+    for (let i = 0; i < expenseGroups.length; i++) {
+      const expenseGroupContractInstance = new web3.eth.Contract(
+        ExpenseGroupContract.abi,
+        expenseGroups[i],
+      )
 
-    const ownerAddress = await expenseGroupContractInstance.methods
-      .memberAddresses(0)
-      .call()
+      const title = await expenseGroupContractInstance.methods.title().call()
 
-    const ownerName = await expenseGroupContractInstance.methods
-      .getMemberName(ownerAddress)
-      .call()
+      const ownerAddress = await expenseGroupContractInstance.methods
+        .memberAddresses(0)
+        .call()
 
-    expenseGroupContracts.push({
-      expenseGroupTitle: title,
-      expenseGroupOwner: ownerName,
-      contractAddress: expenseGroups[i],
+      const ownerName = await expenseGroupContractInstance.methods
+        .getMemberName(ownerAddress)
+        .call()
+
+      expenseGroupContracts.push({
+        expenseGroupTitle: title,
+        expenseGroupOwner: ownerName,
+        contractAddress: expenseGroups[i],
+      })
+    }
+    dispatch(expenseGroupContractsLoadSuccess(expenseGroupContracts))
+
+    showFeedback(dispatch, {
+      text: 'Expense group contracts succesfully loaded',
+      type: 'success',
+      visible: true,
     })
+  } catch (error) {
+    dispatch(expenseGroupContractsLoadError(error.message))
+    throw error
   }
 
-  dispatch(expenseGroupContractsLoaded(expenseGroupContracts))
   return expenseGroupContracts
 }
 
@@ -95,83 +167,140 @@ export const loadExpenseGroupContract = async (
   web3,
   contractAddress,
 ) => {
-  const networkId = await web3.eth.net.getId()
-  const deployedNetwork = ExpenseGroupContract.networks[networkId]
+  let instance
+  dispatch(expenseGroupContractLoad())
 
-  const instance = new web3.eth.Contract(
-    ExpenseGroupContract.abi,
-    deployedNetwork && contractAddress,
-  )
+  try {
+    const networkId = await web3.eth.net.getId()
 
-  dispatch(expenseGroupContractLoaded(instance))
+    if (!isValidNetwork(networkId)) {
+      throw new Error('Invalid network')
+    }
+
+    const deployedNetwork = ExpenseGroupContract.networks[networkId]
+
+    instance = new web3.eth.Contract(
+      ExpenseGroupContract.abi,
+      deployedNetwork && contractAddress,
+    )
+
+    if (instance.options.address) {
+      dispatch(expenseGroupContractLoadSuccess(instance))
+    } else {
+      throw new Error(
+        'Error loading factory contract. Check contract deployment on current network.',
+      )
+    }
+  } catch (error) {
+    dispatch(expenseGroupContractLoadError(error.message))
+    throw error
+  }
+
   return instance
 }
 
 export const loadMembers = async (dispatch, contract) => {
   let members = []
+  dispatch(expenseGroupMembersLoad())
 
-  const membersCount = await contract.methods.getMemberCount().call()
+  try {
+    const membersCount = await contract.methods.getMemberCount().call()
 
-  for (let i = 0; i < membersCount; i++) {
-    const memberAddress = await contract.methods.memberAddresses(i).call()
-    const member = await contract.methods.members(memberAddress).call()
-    members.push(member)
+    for (let i = 0; i < membersCount; i++) {
+      const memberAddress = await contract.methods.memberAddresses(i).call()
+      const member = await contract.methods.members(memberAddress).call()
+      members.push(member)
+    }
+
+    dispatch(expenseGroupMembersLoadSuccess(members))
+  } catch (error) {
+    dispatch(expenseGroupMembersLoadError(error.message))
+    throw error
   }
 
-  dispatch(expenseGroupMembersLoaded(members))
   return members
 }
 
 export const loadExpenses = async (dispatch, contract, account) => {
   let expenses = []
+  dispatch(expenseGroupExpensesLoad())
 
-  const expensesCount = await contract.methods.numExpenses().call()
+  try {
+    const expensesCount = await contract.methods.numExpenses().call()
 
-  for (let i = 0; i < expensesCount; i++) {
-    const expense = await contract.methods.expenses(i).call()
-    expense.identifier = i
-    expense.approvals = await contract.methods.getNumberOfApprovals(i)
-    expense.valueDate = new Date(+expense.valueDate * 1000).toDateString()
-    expense.creationDate = new Date(+expense.creationDate * 1000).toDateString()
+    for (let i = 0; i < expensesCount; i++) {
+      const expense = await contract.methods.expenses(i).call()
+      expense.identifier = i
+      expense.approvals = await contract.methods.getNumberOfApprovals(i)
+      expense.valueDate = new Date(+expense.valueDate * 1000).toDateString()
+      expense.creationDate = new Date(
+        +expense.creationDate * 1000,
+      ).toDateString()
 
-    const payer = expense.payer
-    const payerName = await contract.methods.getMemberName(expense.payer).call()
-    expense.payerWithName = { address: payer, name: payerName }
+      const payer = expense.payer
+      const payerName = await contract.methods
+        .getMemberName(expense.payer)
+        .call()
+     
+      expense.payerWithName = { address: payer, name: payerName }
 
-    const payeesAddresses = await contract.methods.getPayees(i).call()
-    expense.payees = await Promise.all(
-      payeesAddresses.map(async (p) => ({
-        address: p,
-        name: await contract.methods.getMemberName(p).call(),
-      })),
-    )
+      const payeesAddresses = await contract.methods.getPayees(i).call()
+      expense.payees = await Promise.all(
+        payeesAddresses.map(async (p) => ({
+          address: p,
+          name: await contract.methods.getMemberName(p).call(),
+        })),
+      )
 
-    expense.isApprovedByAccount = account
-      ? await contract.methods.getApproval(i, String(account)).call()
-      : false
-    expenses.push(expense)
+      expense.isApprovedByAccount = account
+        ? await contract.methods.getApproval(i, String(account)).call()
+        : false
+      expenses.push(expense)
+    }
+
+    dispatch(expenseGroupExpensesLoadSuccess(expenses))
+
+    showFeedback(dispatch, {
+      text: 'Expense group detail succesfully loaded',
+      type: 'success',
+      visible: true,
+    })
+  } catch (error) {
+    dispatch(expenseGroupExpensesLoadError(error.message))
+    throw error
   }
-
-  dispatch(expenseGroupExpensesLoaded(expenses))
 
   return expenses
 }
 
 export const addExpense = async (dispatch, contract, account, expense) => {
-  await contract.methods
-    .addExpense(expense.name, expense.amount, expense.valueDate, expense.payees)
-    .send({ from: account })
+  dispatch(expenseGroupExpenseAdd())
 
-  dispatch(expenseGroupExpenseAdded(expense))
+  try {
+    await contract.methods
+      .addExpense(
+        expense.name,
+        expense.amount,
+        expense.valueDate,
+        expense.payees,
+      )
+      .send({ from: account })
 
-  await loadExpenses(dispatch, contract, account)
+    dispatch(expenseGroupExpenseAddSuccess(expense))
+    await loadExpenses(dispatch, contract, account)
+    history.push(`/expense-group/${contract.options.address}`)
+    showFeedback(dispatch, {
+      text: 'Expense succesfully added',
+      type: 'success',
+      visible: true,
+    })
+  } catch (error) {
+    dispatch(expenseGroupExpenseAddError(error.message))
+  }
 
-  history.push(`/expense-group/${contract.options.address}`)
-}
+  
 
-export const setLoadingFlag = async (dispatch, loading) => {
-  dispatch(loadingFlagSet(loading))
-  return loading
+  
 }
 
 export const showFeedback = async (dispatch, options) => {

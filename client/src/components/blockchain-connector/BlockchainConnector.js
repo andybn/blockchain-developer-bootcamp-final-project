@@ -3,8 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   loadWeb3,
-  loadAccount,
-  changeNetwork
+  loadAccount
 } from '../../redux/interactions'
 import {
   accountSelector,
@@ -31,7 +30,7 @@ class BlockchainConnector extends Component {
   state = {
     open: false,
   }
-
+  
   openDialog() {
     this.setState({ open: true })
   }
@@ -42,10 +41,8 @@ class BlockchainConnector extends Component {
     const connectBlockchain = async (e) => {
       e.preventDefault()
 
-      const web3 = await loadWeb3(dispatch)
-      const networkId = await web3.eth.net.getId()
+      const web3 = await loadWeb3(dispatch)   
       await loadAccount(dispatch, web3)
-      await changeNetwork(dispatch, networkId)
       subscribeToAccountsChanging(dispatch, web3)
       subscribeToNetworkChanging(dispatch, web3)
 

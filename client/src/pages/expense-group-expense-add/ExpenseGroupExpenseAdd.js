@@ -10,8 +10,9 @@ import {
 import {
   expenseGroupContractSelector,
   expenseGroupMembersSelector,
-  expenseGroupExpensesSelector,
   web3Selector,
+  loadingSelector,
+  errorSelector,
   accountSelector,
 } from '../../redux/selectors'
 class ExpenseGroupExpenseAdd extends Component {
@@ -24,12 +25,17 @@ class ExpenseGroupExpenseAdd extends Component {
   }
 
   async initialize(prevProps) {
+    const { loading, account, error } = this.props
+
     if (
-      this.isContractNotLoaded() ||
-      this.hasContractChanged() ||
-      this.hasNetworkChanged(prevProps)
+      (this.isContractNotLoaded() ||
+        this.hasContractChanged() ||
+        this.hasNetworkChanged(prevProps)) &&
+      !loading &&
+      !error &&
+      account
     ) {
-      this.reload()
+      this.loadData()
     }
   }
 
@@ -49,12 +55,16 @@ class ExpenseGroupExpenseAdd extends Component {
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
-  async reload() {
-    const { dispatch, web3 } = this.props
-    let { contract } = this.props
-    const address = this.props.match.params.contractAddress
-    contract = await loadExpenseGroupContract(dispatch, web3, address)
-    await loadMembers(dispatch, contract)
+  async loadData() {
+    try {
+      const { dispatch, web3 } = this.props
+      let { contract } = this.props
+      const address = this.props.match.params.contractAddress
+      contract = await loadExpenseGroupContract(dispatch, web3, address)
+      await loadMembers(dispatch, contract)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
@@ -102,7 +112,8 @@ function mapStateToProps(state) {
     web3: web3Selector(state),
     account: accountSelector(state),
     members: expenseGroupMembersSelector(state),
-    expenses: expenseGroupExpensesSelector(state),
+    loading: loadingSelector(state),
+    error: errorSelector(state),
   }
 }
 

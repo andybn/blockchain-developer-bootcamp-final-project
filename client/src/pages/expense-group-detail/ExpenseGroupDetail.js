@@ -4,7 +4,6 @@ import {
   loadExpenseGroupContract,
   loadExpenses,
   loadMembers,
-  setLoadingFlag
 } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
@@ -13,6 +12,7 @@ import {
   web3Selector,
   accountSelector,
   networkSelector,
+  errorSelector,
   loadingSelector
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../components/expense-group-member-list/ExpenseGroupMemberList'
@@ -32,14 +32,15 @@ class ExpenseGroupDetail extends Component {
 
   async initialize(prevProps) {
     
-    const { loading } = this.props
+    const { loading, error, account } = this.props
 
-    if (      
+    if (
       (this.isContractNotLoaded() ||
-      this.hasContractChanged() ||
-      this.hasNetworkChanged(prevProps)) && !loading
-    ) {    
-      this.reload(this.props)
+        this.hasContractChanged() ||
+        this.hasNetworkChanged(prevProps)) &&
+      (!loading && !error && account)
+    ) {
+      this.loadData(this.props)
     }
   }
 
@@ -59,21 +60,23 @@ class ExpenseGroupDetail extends Component {
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
-  async reload(props) {    
-    let { contract } = props
-    const { dispatch, web3, account } = props
-    setLoadingFlag(dispatch, true)
-    const address = props.match.params.contractAddress
-    contract = await loadExpenseGroupContract(dispatch, web3, address)
-    await loadMembers(dispatch, contract)
-    await loadExpenses(dispatch, contract, account)
-    setLoadingFlag(dispatch, false)
+  async loadData(props) {
+    try {
+      let { contract } = props
+      const { dispatch, web3, account } = props
+      const address = props.match.params.contractAddress
+      contract = await loadExpenseGroupContract(dispatch, web3, address)
+      await loadMembers(dispatch, contract)
+      await loadExpenses(dispatch, contract, account)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
     const { members, expenses, loading } = this.props
     const address = this.props.match.params.contractAddress
- 
+
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={10}>
@@ -107,6 +110,7 @@ function mapStateToProps(state) {
     expenses: expenseGroupExpensesSelector(state),
     networkId: networkSelector(state),
     loading: loadingSelector(state),
+    error: errorSelector(state),
   }
 }
 
