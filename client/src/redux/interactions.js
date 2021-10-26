@@ -77,7 +77,7 @@ export const changeNetwork = async (dispatch, networkId) => {
 
 export const isValidNetwork = (networkId) => {
   //TODO: Improve when it is deployed to testnets
-  return networkId > 20
+  return networkId > 100
 }
 
 export const loadFactoryContract = async (dispatch, web3) => {

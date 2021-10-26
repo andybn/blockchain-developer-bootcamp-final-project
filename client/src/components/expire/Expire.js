@@ -6,7 +6,7 @@ class Expire extends React.Component {
       this.state = {visible:true}
     }
   
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
       // reset the timer if children are changed
       if (nextProps.children !== this.props.children) {
         this.setTimer();
@@ -19,19 +19,23 @@ class Expire extends React.Component {
     }
   
     setTimer() {
+
+      if(this.props.delay === 0) return;
+
       // clear any existing timer
       if (this._timer != null) {
         clearTimeout(this._timer)
       }
   
       // hide after `delay` milliseconds
-      this._timer = setTimeout(function(){
+      this._timer = setTimeout(function(){      
         this.setState({visible: false});
         this._timer = null;
+        this.props.onTimeout();
       }.bind(this), this.props.delay);
     }
   
-    componentWillUnmount() {
+    componentWillUnmount() {   
       clearTimeout(this._timer);
     }
   

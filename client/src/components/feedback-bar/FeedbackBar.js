@@ -6,20 +6,18 @@ import Alert from '@material-ui/lab/Alert'
 import { showFeedback } from '../../redux/interactions'
 import { feedbackSelector } from '../../redux/selectors'
 import { errorSelector } from '../../redux/selectors'
+import Expire from '../expire/Expire'
+
 class FeedbackBar extends Component {
   async componentDidUpdate(prevProps) {
-    
     const { dispatch } = this.props
 
     if (this.props.error && prevProps && prevProps.error !== this.props.error) {
-      
-      const feedback = {
+      showFeedback(dispatch, {
         text: this.props.error,
         type: 'error',
         visible: true,
-      }
-
-      showFeedback(dispatch, feedback)
+      })
     }
   }
 
@@ -27,27 +25,28 @@ class FeedbackBar extends Component {
     const { feedback, dispatch } = this.props
 
     const handleClose = () => {
-      const feedback = {
-        text: '',
-        type: '',
+      showFeedback(dispatch, {
         visible: false,
-      }
-
-      showFeedback(dispatch, feedback)
+      })
     }
 
     return (
       <div>
         {feedback && feedback.visible && (
-          <div>          
+          <Expire
+            delay={5000}
+            onTimeout={handleClose}
+          >
+            <div>
               <Alert
                 variant="filled"
                 onClose={handleClose}
                 severity={feedback.type}
               >
                 {feedback.text}
-              </Alert>          
-          </div>
+              </Alert>
+            </div>
+          </Expire>
         )}
       </div>
     )
