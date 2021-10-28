@@ -1,14 +1,15 @@
 function rootReducer(state = {}, action) {
-  
   switch (action.type) {
     case 'WEB3_LOAD':
     case 'ACCOUNT_LOAD':
     case 'FACTORY_CONTRACT_LOAD':
     case 'EXPENSE_GROUP_CONTRACTS_LOAD':
     case 'EXPENSE_GROUP_CONTRACT_LOAD':
-    case 'EXPENSE_GROUP_EXPENSE_ADD':
     case 'EXPENSE_GROUP_MEMBERS_LOAD':
     case 'EXPENSE_GROUP_EXPENSES_LOAD':
+    case 'EXPENSE_GROUP_ADD':
+    case 'EXPENSE_GROUP_EXPENSE_ADD':
+    case 'EXPENSE_GROUP_EXPENSE_APPROVE':
       return { ...state, fetchInProgress: true, error: null }
     case 'NETWORK_CHANGE':
       return {
@@ -70,12 +71,41 @@ function rootReducer(state = {}, action) {
         fetchInProgress: false,
         error: null,
       }
+    case 'EXPENSE_GROUP_ADD_SUCCESS':
+      return {
+        ...state,
+        expenseGroupContracts: state.expenseGroupContracts
+          ? [...state.expenseGroupContracts, action.expenseGroup]
+          : [action.expenseGroup],
+        fetchInProgress: false,
+        error: null,
+      }
     case 'EXPENSE_GROUP_EXPENSE_ADD_SUCCESS':
       return {
         ...state,
         expenses: state.expenses
           ? [...state.expenses, action.expense]
           : [action.expense],
+        fetchInProgress: false,
+        error: null,
+      }
+    case 'EXPENSE_GROUP_MEMBER_ADD_SUCCESS':
+      return {
+        ...state,
+        members: state.members
+          ? [...state.members, action.member]
+          : [action.members],
+        fetchInProgress: false,
+        error: null,
+      }
+    case 'EXPENSE_GROUP_EXPENSE_APPROVE_SUCCESS':
+      return {
+        ...state,
+        expenses: state.expenses.map((expense) =>
+          expense.expenseIndex === action.expense.expenseIndex
+            ? { ...expense, approved: action.expense.approved }
+            : expense,
+        ),
         fetchInProgress: false,
         error: null,
       }
@@ -86,8 +116,11 @@ function rootReducer(state = {}, action) {
     case 'EXPENSE_GROUP_CONTRACT_LOAD_ERROR':
     case 'EXPENSE_GROUP_MEMBERS_LOAD_ERROR':
     case 'EXPENSE_GROUP_EXPENSES_LOAD_ERROR':
+    case 'EXPENSE_GROUP_ADD_ERROR':
     case 'EXPENSE_GROUP_EXPENSE_ADD_ERROR':
-      return { ...state, fetchInProgress: false, error: null }
+    case 'EXPENSE_GROUP_MEMBER_ADD_ERROR':
+    case 'EXPENSE_GROUP_EXPENSE_APPROVE_ERROR':
+      return { ...state, fetchInProgress: false, error: action.error }
     case 'NETWORK_CHANGE_ERROR':
       return {
         ...state,

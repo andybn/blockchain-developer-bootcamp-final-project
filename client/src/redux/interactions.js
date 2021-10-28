@@ -28,6 +28,15 @@ import {
   networkChangeSuccess,
   networkChangeError,
   feedbackShown,
+  expenseGroupExpenseApprove,
+  expenseGroupMemberAddError,
+  expenseGroupMemberAdd,
+  expenseGroupMemberAddSuccess,
+  expenseGroupAdd,
+  expenseGroupAddSuccess,
+  expenseGroupAddError,
+  expenseGroupExpenseApproveSuccess,
+  expenseGroupExpenseApproveError,
 } from './actions'
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
@@ -114,11 +123,6 @@ export const loadFactoryContract = async (dispatch, web3) => {
 }
 
 export const loadExpenseGroupContracts = async (dispatch, contract, web3) => {
-  // const accounts = await web3.eth.getAccounts();
-  //     await contract.methods
-  //       .createExpenseGroup('SenderA', 'WorldTrip')
-  //       .send({ from: accounts[0] });
-
   const expenseGroupContracts = []
   dispatch(expenseGroupContractsLoad())
 
@@ -160,6 +164,35 @@ export const loadExpenseGroupContracts = async (dispatch, contract, web3) => {
   }
 
   return expenseGroupContracts
+}
+
+export const addExpenseGroup = async (
+  dispatch,
+  contract,
+  web3,
+  account,
+  ownerName,
+  title,
+) => {
+  dispatch(expenseGroupAdd())
+
+  try {
+    await contract.methods
+      .createExpenseGroup(ownerName, title)
+      .send({ from: account })
+
+    dispatch(expenseGroupAddSuccess({ ownerName, title }))
+
+    await loadExpenseGroupContracts(dispatch, contract, web3)
+    history.push('/')
+    showFeedback(dispatch, {
+      text: 'Expense group succesfully added',
+      type: 'success',
+      visible: true,
+    })
+  } catch (error) {
+    dispatch(expenseGroupAddError(error.message))
+  }
 }
 
 export const loadExpenseGroupContract = async (
@@ -241,7 +274,7 @@ export const loadExpenses = async (dispatch, contract, account) => {
       const payerName = await contract.methods
         .getMemberName(expense.payer)
         .call()
-     
+
       expense.payerWithName = { address: payer, name: payerName }
 
       const payeesAddresses = await contract.methods.getPayees(i).call()
@@ -252,9 +285,12 @@ export const loadExpenses = async (dispatch, contract, account) => {
         })),
       )
 
-      expense.isApprovedByAccount = account
+      expense.approved = account
         ? await contract.methods.getApproval(i, String(account)).call()
         : false
+
+      expense.approvals = await contract.methods.getNumberOfApprovals(i).call()
+
       expenses.push(expense)
     }
 
@@ -296,11 +332,56 @@ export const addExpense = async (dispatch, contract, account, expense) => {
     })
   } catch (error) {
     dispatch(expenseGroupExpenseAddError(error.message))
+    throw error
   }
+}
 
-  
+export const addMember = async (dispatch, contract, account, member) => {
+  dispatch(expenseGroupMemberAdd())
 
-  
+  try {
+    await contract.methods
+      .addMember(member.name, member.address)
+      .send({ from: account })
+
+    dispatch(expenseGroupMemberAddSuccess(member))
+    await loadMembers(dispatch, contract)
+    history.push(`/expense-group/${contract.options.address}`)
+    showFeedback(dispatch, {
+      text: 'Member succesfully added',
+      type: 'success',
+      visible: true,
+    })
+  } catch (error) {
+    dispatch(expenseGroupMemberAddError(error.message))
+    throw error
+  }
+}
+
+export const approve = async (
+  dispatch,
+  contract,
+  account,
+  expenseId,
+  approved,
+) => {
+  dispatch(expenseGroupExpenseApprove())
+
+  try {
+    await contract.methods.approve(expenseId, approved).send({ from: account })
+
+    dispatch(expenseGroupExpenseApproveSuccess({ expenseId, approved }))
+    await loadExpenses(dispatch, contract, account)
+    history.push(`/expense-group/${contract.options.address}`)
+    showFeedback(dispatch, {
+      text: 'Expense succesfully approved',
+      type: 'success',
+      visible: true,
+    })
+  } catch (error) {
+    dispatch(expenseGroupExpenseApproveError(error.message))
+    throw error
+  }
 }
 
 export const showFeedback = async (dispatch, options) => {

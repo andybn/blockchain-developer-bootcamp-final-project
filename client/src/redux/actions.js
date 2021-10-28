@@ -99,6 +99,26 @@ export function expenseGroupContractsLoadError(error) {
   }
 }
 
+export function expenseGroupAdd() {
+  return {
+    type: 'EXPENSE_GROUP_ADD'
+  }
+}
+
+export function expenseGroupAddSuccess(expenseGroup) {
+  return {
+    type: 'EXPENSE_GROUP_ADD_SUCCESS',
+    expenseGroup,
+  }
+}
+
+export function expenseGroupAddError(error) {
+  return {
+    type: 'EXPENSE_GROUP_ADD_ERROR',
+    error
+  }
+}
+
 export function expenseGroupContractLoad() {
   return {
     type: 'EXPENSE_GROUP_CONTRACT_LOAD',
@@ -168,13 +188,54 @@ export function expenseGroupExpenseAdd() {
 export function expenseGroupExpenseAddSuccess(expense) {
   return {
     type: 'EXPENSE_GROUP_EXPENSE_ADD_SUCCESS',
-    expense,
+    expense
   }
 }
 
 export function expenseGroupExpenseAddError(error) {
   return {
     type: 'EXPENSE_GROUP_EXPENSE_ADD_ERROR',
+    error
+  }
+}
+
+export function expenseGroupMemberAdd() {
+  return {
+    type: 'EXPENSE_GROUP_MEMBER_ADD'
+  }
+}
+
+export function expenseGroupMemberAddSuccess(member) {
+  return {
+    type: 'EXPENSE_GROUP_MEMBER_ADD_SUCCESS',
+    member,
+  }
+}
+
+export function expenseGroupMemberAddError(error) {
+  return {
+    type: 'EXPENSE_GROUP_MEMBER_ADD_ERROR',
+    error
+  }
+}
+
+
+export function expenseGroupExpenseApprove() {
+  return {
+    type: 'EXPENSE_GROUP_EXPENSE_APPROVE'
+  }
+}
+
+export function expenseGroupExpenseApproveSuccess(expense) {
+  return {
+    type: 'EXPENSE_GROUP_EXPENSE_APPROVE_SUCCESS',
+    expense,
+  }
+}
+
+export function expenseGroupExpenseApproveError(error) {
+  return {
+    type: 'EXPENSE_GROUP_EXPENSE_APPROVE_ERROR',
     error
   }
 }
