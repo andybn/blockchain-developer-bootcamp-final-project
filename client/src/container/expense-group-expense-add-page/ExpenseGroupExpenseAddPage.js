@@ -14,6 +14,7 @@ import {
   loadingSelector,
   errorSelector,
   accountSelector,
+  networkSelector
 } from '../../redux/selectors'
 class ExpenseGroupExpenseAddPage extends Component {
   async componentDidMount() {
@@ -82,7 +83,11 @@ class ExpenseGroupExpenseAddPage extends Component {
         payees: [String(members[0].memberAddress)],
       }
 
-      await addExpense(dispatch, contract, account, expense)
+      try {
+        await addExpense(dispatch, contract, account, expense)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     return (
@@ -114,6 +119,7 @@ function mapStateToProps(state) {
     members: expenseGroupMembersSelector(state),
     loading: loadingSelector(state),
     error: errorSelector(state),
+    networkId: networkSelector(state)
   }
 }
 

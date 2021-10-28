@@ -171,24 +171,23 @@ export const addExpenseGroup = async (
   contract,
   web3,
   account,
-  ownerName,
-  title,
+  expenseGroup
 ) => {
   dispatch(expenseGroupAdd())
 
   try {
     await contract.methods
-      .createExpenseGroup(ownerName, title)
+      .createExpenseGroup(expenseGroup.ownerName, expenseGroup.title)
       .send({ from: account })
 
-    dispatch(expenseGroupAddSuccess({ ownerName, title }))
+    dispatch(expenseGroupAddSuccess(expenseGroup))
 
     await loadExpenseGroupContracts(dispatch, contract, web3)
     history.push('/')
     showFeedback(dispatch, {
       text: 'Expense group succesfully added',
       type: 'success',
-      visible: true,
+      visible: true
     })
   } catch (error) {
     dispatch(expenseGroupAddError(error.message))
@@ -331,7 +330,7 @@ export const addExpense = async (dispatch, contract, account, expense) => {
       visible: true,
     })
   } catch (error) {
-    dispatch(expenseGroupExpenseAddError(error.message))
+    dispatch(expenseGroupExpenseAddError("Error adding new expense"))
     throw error
   }
 }
@@ -353,7 +352,7 @@ export const addMember = async (dispatch, contract, account, member) => {
       visible: true,
     })
   } catch (error) {
-    dispatch(expenseGroupMemberAddError(error.message))
+    dispatch(expenseGroupMemberAddError("Error adding the new member. Check if the address already exists."))
     throw error
   }
 }

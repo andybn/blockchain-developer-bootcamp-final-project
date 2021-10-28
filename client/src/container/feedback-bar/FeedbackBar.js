@@ -34,7 +34,7 @@ class FeedbackBar extends Component {
       <div>
         {feedback && feedback.visible && (
           <Expire
-            delay={5000}
+            delay={7500}
             onTimeout={handleClose}
           >
             <div>
