@@ -79,7 +79,7 @@ class ExpenseGroupAddPage extends Component {
             color="primary"
             aria-label="outlined primary button group"
           >
-            <Button variant="outlined" onClick={prepareExpenseGroupForInsertion} color="inherit">
+            <Button disabled={!web3} variant="outlined" onClick={prepareExpenseGroupForInsertion} color="inherit">
               [ADD NEW EXPENSE GROUP]
             </Button>
           </ButtonGroup>

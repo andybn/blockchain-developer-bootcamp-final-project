@@ -26,7 +26,8 @@ class FeedbackBar extends Component {
 
     const handleClose = () => {
       showFeedback(dispatch, {
-        visible: false,
+        type: "",
+        visible: false
       })
     }
 
@@ -34,7 +35,7 @@ class FeedbackBar extends Component {
       <div>
         {feedback && feedback.visible && (
           <Expire
-            delay={7500}
+            delay={0}
             onTimeout={handleClose}
           >
             <div>

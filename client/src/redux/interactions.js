@@ -1,4 +1,5 @@
 import getWeb3 from '../common/getWeb3'
+import { tryExtractVMErrorMessage } from '../common/utils'
 import {
   web3Load,
   web3LoadSuccess,
@@ -41,6 +42,8 @@ import {
 import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
 import history from '../common/history'
+
+export const numberOfConfirmationsToProvideFeedback = 5
 
 export const loadWeb3 = async (dispatch) => {
   let web3
@@ -172,7 +175,7 @@ export const addExpenseGroup = async (
   contract,
   web3,
   account,
-  expenseGroup
+  expenseGroup,
 ) => {
   dispatch(expenseGroupAdd())
 
@@ -180,16 +183,35 @@ export const addExpenseGroup = async (
     await contract.methods
       .createExpenseGroup(expenseGroup.ownerName, expenseGroup.title)
       .send({ from: account })
+      .on('transactionHash', async (tx) => {
+        console.log(tx)
+      })
+      .on('receipt', async (receipt) => {
+        dispatch(expenseGroupAddSuccess(expenseGroup))
 
-    dispatch(expenseGroupAddSuccess(expenseGroup))
-
-    await loadExpenseGroupContracts(dispatch, contract, web3)
-    history.push('/')
-    showFeedback(dispatch, {
-      text: 'Expense group succesfully added',
-      type: 'success',
-      visible: true
-    })
+        await loadExpenseGroupContracts(dispatch, contract, web3)
+        history.push('/')
+        showFeedback(dispatch, {
+          text: `Expense group succesfully added. Transaction hash: ${receipt.transactionHash}. Block: ${receipt.blockNumber}`,
+          type: 'success',
+          visible: true,
+        })
+      })
+      .on('confirmation', (confirmationNumber) => {
+        console.log(confirmationNumber)
+        if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
+          showFeedback(dispatch, {
+            text: `Expense group insertion transaction confirmed (${confirmationNumber}) times`,
+            type: 'success',
+            visible: true,
+          })
+        }
+      })
+      .on('error', (error) => {
+        dispatch(
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+        )
+      })
   } catch (error) {
     dispatch(expenseGroupAddError(error.message))
   }
@@ -321,17 +343,36 @@ export const addExpense = async (dispatch, contract, account, expense) => {
         expense.payees,
       )
       .send({ from: account })
-
-    dispatch(expenseGroupExpenseAddSuccess(expense))
-    await loadExpenses(dispatch, contract, account)
-    history.push(`/expense-group/${contract.options.address}`)
-    showFeedback(dispatch, {
-      text: 'Expense succesfully added',
-      type: 'success',
-      visible: true,
-    })
+      .on('transactionHash', async (tx) => {
+        console.log(tx)
+      })
+      .on('receipt', async (receipt) => {
+        dispatch(expenseGroupExpenseAddSuccess(expense))
+        await loadExpenses(dispatch, contract, account)
+        history.push(`/expense-group/${contract.options.address}`)
+        showFeedback(dispatch, {
+          text: `Expense succesfully added. Transaction hash: ${receipt.transactionHash}. Block: ${receipt.blockNumber}`,
+          type: 'success',
+          visible: true,
+        })
+      })
+      .on('confirmation', (confirmationNumber) => {
+        console.log(confirmationNumber)
+        if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
+          showFeedback(dispatch, {
+            text: `Expense insertion transaction confirmed (${confirmationNumber}) times`,
+            type: 'success',
+            visible: true,
+          })
+        }
+      })
+      .on('error', (error) => {
+        dispatch(
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+        )
+      })
   } catch (error) {
-    dispatch(expenseGroupExpenseAddError("Error adding new expense"))
+    dispatch(expenseGroupExpenseAddError('Unknown error adding new expense'))
     throw error
   }
 }
@@ -343,17 +384,36 @@ export const addMember = async (dispatch, contract, account, member) => {
     await contract.methods
       .addMember(member.name, member.address)
       .send({ from: account })
-
-    dispatch(expenseGroupMemberAddSuccess(member))
-    await loadMembers(dispatch, contract)
-    history.push(`/expense-group/${contract.options.address}`)
-    showFeedback(dispatch, {
-      text: 'Member succesfully added',
-      type: 'success',
-      visible: true,
-    })
+      .on('transactionHash', async (tx) => {
+        console.log(tx)
+      })
+      .on('receipt', async (receipt) => {
+        dispatch(expenseGroupMemberAddSuccess(member))
+        await loadMembers(dispatch, contract)
+        history.push(`/expense-group/${contract.options.address}`)
+        showFeedback(dispatch, {
+          text: `Member succesfully added. Transaction hash: ${receipt.transactionHash}. Block: ${receipt.blockNumber}`,
+          type: 'success',
+          visible: true,
+        })
+      })
+      .on('confirmation', (confirmationNumber) => {
+        console.log(confirmationNumber)
+        if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
+          showFeedback(dispatch, {
+            text: `Member insertion transaction confirmed (${confirmationNumber}) times`,
+            type: 'success',
+            visible: true,
+          })
+        }
+      })
+      .on('error', (error) => {
+        dispatch(
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+        )
+      })
   } catch (error) {
-    dispatch(expenseGroupMemberAddError("Error adding the new member. Check if the address already exists."))
+    dispatch(expenseGroupMemberAddError('Unknown error adding the new member'))
     throw error
   }
 }
@@ -368,16 +428,37 @@ export const approve = async (
   dispatch(expenseGroupExpenseApprove())
 
   try {
-    await contract.methods.approve(expenseId, approved).send({ from: account })
-
-    dispatch(expenseGroupExpenseApproveSuccess({ expenseId, approved }))
-    await loadExpenses(dispatch, contract, account)
-    history.push(`/expense-group/${contract.options.address}`)
-    showFeedback(dispatch, {
-      text: 'Expense succesfully approved',
-      type: 'success',
-      visible: true,
-    })
+    await contract.methods
+      .approve(expenseId, approved)
+      .send({ from: account })
+      .on('transactionHash', async (tx) => {
+        console.log(tx)
+      })
+      .on('receipt', async (receipt) => {        
+        dispatch(expenseGroupExpenseApproveSuccess({ expenseId, approved }))
+        await loadExpenses(dispatch, contract, account)
+        history.push(`/expense-group/${contract.options.address}`)
+        showFeedback(dispatch, {
+          text: `Expense succesfully approved. Transaction hash: ${receipt.transactionHash}. Block: ${receipt.blockNumber}`,
+          type: 'success',
+          visible: true,
+        })
+      })
+      .on('confirmation', (confirmationNumber) => {
+        console.log(confirmationNumber)
+        if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
+          showFeedback(dispatch, {
+            text: `Expense approval transaction confirmed (${confirmationNumber}) times`,
+            type: 'success',
+            visible: true,
+          })
+        }
+      })
+      .on('error', (error) => {
+        dispatch(
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+        )
+      })
   } catch (error) {
     dispatch(expenseGroupExpenseApproveError(error.message))
     throw error

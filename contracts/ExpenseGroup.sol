@@ -71,7 +71,8 @@ contract ExpenseGroup is Pausable {
     modifier onlyMember() {
         require(
             msg.sender == members[msg.sender].memberAddress ||
-                !isContractInstanceCreated
+                !isContractInstanceCreated,
+        "Sender is still not a member"
         );
         _;
     }
@@ -80,7 +81,11 @@ contract ExpenseGroup is Pausable {
     /// @param _owner address of the first member.
     /// @param _ownerName Yhe name of the first member.
     /// @param _title ExpenseGroup title 
-    constructor(address _owner, string memory _ownerName, string memory _title) {
+    constructor(address _owner, string memory _ownerName, string memory _title) {                
+        
+        require(bytes(_ownerName).length > 0, "Owner name cannot be empty");
+        require(bytes(_title).length > 0, "Title cannot be empty");
+        
         addMember(_ownerName, _owner);
         title = _title;
         isContractInstanceCreated = true;
@@ -120,10 +125,14 @@ contract ExpenseGroup is Pausable {
     {
         require(
             _memberAddress != members[_memberAddress].memberAddress ||
-                !isContractInstanceCreated
+                !isContractInstanceCreated,
+            "A member with that address already exists"
         );
 
-        require(_memberAddress != address(0));
+        require(bytes(_name).length > 0, "Name cannot be empty");
+        
+        require(_memberAddress != address(0), "Address cannot be empty");
+       
 
         Member memory member = Member({
             identifier: 0,
@@ -161,10 +170,11 @@ contract ExpenseGroup is Pausable {
         uint256 _valueDate,
         address[] memory _payees
     ) public onlyMember whenNotPaused {
-        require(_amount > 0);
-        require(_payees.length > 0 && _payees.length <= MAX_PAYEES);
-        require(_areAllMembers(_payees));
-        require(_areAllAddressesUnique(_payees));
+        require(bytes(_title).length > 0, "Title cannot be empty");
+        require(_amount > 0, "Amount must be greater than 0");
+        require(_payees.length > 0 && _payees.length <= MAX_PAYEES, "No more expenses can be added");
+        require(_areAllMembers(_payees), "All payees must be members");
+        require(_areAllAddressesUnique(_payees), "Some address is duplicated");
 
         /// NOTE: Expense contains a mapping 'approvals' and data location needs to be storage.
         Expense storage expense = expenses[numExpenses++];
@@ -188,8 +198,8 @@ contract ExpenseGroup is Pausable {
         whenNotPaused
     {
         Expense storage expense = expenses[_expenseId];
-        require(block.timestamp < expense.creationDate + 4 weeks);
-        require(expense.approvals[msg.sender] != _approved);
+        require(block.timestamp < expense.creationDate + 4 weeks, "Expense cannot be approve after 4 weeks since creation");
+        require(expense.approvals[msg.sender] != _approved, "Current approval state is the same");
 
         uint256 numberOfApprovalsBefore = getNumberOfApprovals(_expenseId);
 
@@ -221,9 +231,10 @@ contract ExpenseGroup is Pausable {
         whenNotPaused
     {
         address _payer = msg.sender;
-        require(msg.value > 0);
-        require(_payee != _payer);
-        require(_isMember(_payee));
+        require(msg.value > 0, "Amount sent must be greater than 0");
+        require(_payee != _payer, "Payer address must be different from payee one");
+        require(_isMember(_payee), "Payee must be a member");
+        require(bytes(_title).length > 0, "The title cannot be empty");
 
         Payment memory payment = Payment({
             title: _title,
@@ -242,7 +253,7 @@ contract ExpenseGroup is Pausable {
 
     /// @notice Allow each user to withdraw its money from the smart contract
     function withdraw() public onlyMember {
-        require(withdrawals[msg.sender] > 0);
+        require(withdrawals[msg.sender] > 0, "Widthdrawal amount is zero");
         uint256 amount = withdrawals[msg.sender];
         withdrawals[msg.sender] = 0;
 

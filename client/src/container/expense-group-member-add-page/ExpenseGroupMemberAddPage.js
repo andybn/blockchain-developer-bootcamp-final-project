@@ -66,7 +66,7 @@ class ExpenseGroupMemberAddPage extends Component {
   render() {
     const address = this.props.match.params.contractAddress
 
-    const { dispatch, contract, account } = this.props
+    const { dispatch, contract, account, web3 } = this.props
 
     const prepareMemberForInsertion = async (e) => {
       e.preventDefault()
@@ -93,6 +93,7 @@ class ExpenseGroupMemberAddPage extends Component {
             <Button
               variant="outlined"
               onClick={prepareMemberForInsertion}
+              disabled={!web3}
               color="inherit"
             >
               [ADD MEMBER TO EXPENSE GROUP {address} ]
