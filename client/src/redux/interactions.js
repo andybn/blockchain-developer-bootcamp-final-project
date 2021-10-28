@@ -29,6 +29,7 @@ import {
   networkChangeSuccess,
   networkChangeError,
   feedbackShown,
+  feedbackCleared,
   expenseGroupExpenseApprove,
   expenseGroupMemberAddError,
   expenseGroupMemberAdd,
@@ -434,7 +435,7 @@ export const approve = async (
       .on('transactionHash', async (tx) => {
         console.log(tx)
       })
-      .on('receipt', async (receipt) => {        
+      .on('receipt', async (receipt) => {
         dispatch(expenseGroupExpenseApproveSuccess({ expenseId, approved }))
         await loadExpenses(dispatch, contract, account)
         history.push(`/expense-group/${contract.options.address}`)
@@ -468,4 +469,9 @@ export const approve = async (
 export const showFeedback = async (dispatch, options) => {
   dispatch(feedbackShown(options))
   return options
+}
+
+export const clearFeedback = async (dispatch) => {
+  dispatch(feedbackCleared())
+  return
 }

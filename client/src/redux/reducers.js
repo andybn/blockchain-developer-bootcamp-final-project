@@ -131,6 +131,8 @@ function rootReducer(state = {}, action) {
       }
     case 'FEEDBACK_SHOWN':
       return { ...state, feedback: action.options }
+    case 'FEEDBACK_CLEARED':
+        return { ...state, feedback: { visible: false, type: "success", text: ""} }
     default:
       return state
   }

@@ -10,41 +10,54 @@ import ExpenseGroupsPage from '../expense-groups-page/ExpenseGroupsPage'
 import { BlockLoading } from 'react-loadingg'
 import { loadingSelector } from '../../redux/selectors'
 import FeedbackBar from '../feedback-bar/FeedbackBar'
+import { clearFeedback } from '../../redux/interactions'
+import history from '../../common/history'
+
 class App extends Component {
+  componentDidMount() {
+    
+    let {dispatch } = this.props
+
+    this.unlisten = history.listen((location) => {
+      clearFeedback(dispatch);
+    })
+  }
+  componentWillUnmount() {
+    this.unlisten()
+  }
+
   render() {
     const { loading } = this.props
-    
-    return (     
-     <div>
-        <Navbar />                
+    return (
+      <div>
+        <Navbar />
         <FeedbackBar />
-        {(loading)
-         && <BlockLoading />}
-        <div className="App">     
-            <Switch>
-              <Route exact path="/" component={ExpenseGroupsPage} />
-              <Route
-                exact
-                path="/expense-group/:contractAddress"
-                component={ExpenseGroupDetailPage}
-              />
-              <Route
-                exact
-                path="/expense-groups/add"
-                component={ExpenseGroupAddPage}
-              />
-              <Route
-                exact
-                path="/expense-group/:contractAddress/expenses/add"
-                component={ExpenseGroupExpenseAddPage}
-              />
-              <Route
-                exact
-                path="/expense-group/:contractAddress/members/add"
-                component={ExpenseGroupMemberAddPage}
-              />
-            </Switch>          
-        </div>        
+        {loading && <BlockLoading />}
+        <div className="App">
+          <Switch>
+            <Route exact path="/" component={ExpenseGroupsPage} />
+            <Route
+              exact
+              path="/expense-group/:contractAddress"
+              component={ExpenseGroupDetailPage}
+            />
+            <Route
+              exact
+              path="/expense-groups/add"
+              component={ExpenseGroupAddPage}
+            />
+            <Route
+              exact
+              path="/expense-group/:contractAddress/expenses/add"
+              component={ExpenseGroupExpenseAddPage}
+            />
+            <Route
+              exact
+              path="/expense-group/:contractAddress/members/add"
+              component={ExpenseGroupMemberAddPage}
+            />
+          </Switch>
+        </div>
       </div>
     )
   }
@@ -52,7 +65,7 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    loading: loadingSelector(state)
+    loading: loadingSelector(state),
   }
 }
 

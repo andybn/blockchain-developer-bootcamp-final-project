@@ -248,3 +248,8 @@ export function feedbackShown(options) {
   }
 }
 
+export function feedbackCleared() {
+  return {
+    type: 'FEEDBACK_CLEARED'
+  }
+}
