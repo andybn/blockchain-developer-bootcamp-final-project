@@ -21,6 +21,7 @@ function rootReducer(state = {}, action) {
       return {
         ...state,
         web3: action.web3,
+        networkId: action.networkId,
         fetchInProgress: false,
         error: null,
       }

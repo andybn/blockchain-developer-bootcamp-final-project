@@ -4,10 +4,11 @@ export function web3Load() {
   }
 }
 
-export function web3LoadSuccess(web3) {
+export function web3LoadSuccess(web3, networkId) {
   return {
     type: 'WEB3_LOAD_SUCCESS',
-    web3
+    web3,
+    networkId
   }
 }
 

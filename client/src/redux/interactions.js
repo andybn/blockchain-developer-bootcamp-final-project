@@ -47,7 +47,8 @@ export const loadWeb3 = async (dispatch) => {
   dispatch(web3Load())
   try {
     web3 = await getWeb3()
-    dispatch(web3LoadSuccess(web3))
+    const networkId = await web3.eth.net.getId()
+    dispatch(web3LoadSuccess(web3, networkId))
   } catch (error) {
     dispatch(web3LoadError(error.message))
   }
