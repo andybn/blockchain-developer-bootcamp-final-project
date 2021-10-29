@@ -17,6 +17,7 @@ import {
   loadingSelector,
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../component/expense-group-member-list/ExpenseGroupMemberList'
+import ExpenseGroupBalanceChart from '../../component/expense-group-balance-chart/ExpenseGroupBalanceChart'
 import ExpenseGroupDetailToolbar from '../../component/expense-group-detail-toolbar/ExpenseGroupDetailToolbar'
 import { withRouter } from 'react-router-dom'
 import { Grid } from '@material-ui/core'
@@ -103,9 +104,9 @@ class ExpenseGroupDetailPage extends Component {
         </Grid>
         {!loading && (
           <Grid item xs={10}>
-            <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
+            <ExpenseGroupBalanceChart members={members}></ExpenseGroupBalanceChart>
           </Grid>
-        )}
+        )}    
         {!loading && (
           <Grid item xs={10}>
             {expenses && expenses.length > 0 && (
@@ -172,6 +173,12 @@ class ExpenseGroupDetailPage extends Component {
             )}
           </Grid>
         )}
+        {!loading && (
+          <Grid item xs={10}>
+            <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
+          </Grid>
+        )}        
+        
       </Grid>
     )
   }
