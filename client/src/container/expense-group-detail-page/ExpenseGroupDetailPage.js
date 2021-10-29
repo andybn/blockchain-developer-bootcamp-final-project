@@ -4,6 +4,7 @@ import {
   loadExpenseGroupContract,
   loadExpenses,
   loadMembers,
+  approve
 } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
@@ -13,13 +14,20 @@ import {
   accountSelector,
   networkSelector,
   errorSelector,
-  loadingSelector
+  loadingSelector,
 } from '../../redux/selectors'
 import ExpenseGroupMemberList from '../../component/expense-group-member-list/ExpenseGroupMemberList'
-import ExpenseGroupExpenseList from '../../component/expense-group-expense-list/ExpenseGroupExpenseList'
 import ExpenseGroupDetailToolbar from '../../component/expense-group-detail-toolbar/ExpenseGroupDetailToolbar'
 import { withRouter } from 'react-router-dom'
 import { Grid } from '@material-ui/core'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button
+} from '@material-ui/core'
 
 class ExpenseGroupDetailPage extends Component {
   async componentDidMount() {
@@ -31,14 +39,15 @@ class ExpenseGroupDetailPage extends Component {
   }
 
   async initialize(prevProps) {
-    
     const { loading, error, account } = this.props
 
     if (
       (this.isContractNotLoaded() ||
         this.hasContractChanged() ||
         this.hasNetworkChanged(prevProps)) &&
-      (!loading && !error && account)
+      !loading &&
+      !error &&
+      account
     ) {
       this.loadData(this.props)
     }
@@ -72,10 +81,18 @@ class ExpenseGroupDetailPage extends Component {
       console.log(error)
     }
   }
-
+  
   render() {
-    const { members, expenses, loading } = this.props
+    const { members, expenses, contract, loading, web3, account, dispatch } = this.props
     const address = this.props.match.params.contractAddress
+
+    const approveExpense = async (expense) => {
+      try {
+        await approve(dispatch, contract, account, expense.identifier, !expense.approved)
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     return (
       <Grid container style={{ margin: 15 }}>
@@ -91,9 +108,68 @@ class ExpenseGroupDetailPage extends Component {
         )}
         {!loading && (
           <Grid item xs={10}>
-            <ExpenseGroupExpenseList
-              expenses={expenses}
-            ></ExpenseGroupExpenseList>
+            {expenses && expenses.length > 0 && (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell colSpan={9}>Expenses</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">Id</TableCell>
+                    <TableCell align="left">Name</TableCell>
+                    <TableCell align="left">Amount</TableCell>
+                    <TableCell align="left">ValueDate</TableCell>
+                    <TableCell align="left">CreationDate</TableCell>
+                    <TableCell align="left">Approved</TableCell>
+                    <TableCell align="left">Approvals</TableCell>
+                    <TableCell align="left">Payer</TableCell>
+                    <TableCell align="left">Payees</TableCell>
+                    <TableCell align="left"></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {expenses.map((row) => (
+                    <TableRow key={row.identifier}>
+                      <TableCell align="left">{row.identifier}</TableCell>
+                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="left">{row.amount}</TableCell>
+                      <TableCell align="left">{row.valueDate}</TableCell>
+                      <TableCell align="left">{row.creationDate}</TableCell>
+                      <TableCell align="left">
+                        {row.approved ? 'Yes' : 'No'}
+                      </TableCell>
+                      <TableCell align="left">{row.approvals}</TableCell>
+                      <TableCell title={row.payerWithName.address} align="left">
+                        {row.payerWithName.name}
+                      </TableCell>
+                      <TableCell>
+                        <Table>
+                          <TableBody>
+                            {row.payees.map((payee) => (
+                              <TableRow key={payee.address}>
+                                <TableCell title={payee.address} align="left">
+                                  {payee.name}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => approveExpense(row)}
+                          disabled={!(web3 && contract)}
+                          variant="outlined"
+                          color="inherit"
+                        >
+                          { row.approved ? "Unapprove" : "Approve" }
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </Grid>
         )}
       </Grid>

@@ -54,7 +54,8 @@ export const loadWeb3 = async (dispatch) => {
     const networkId = await web3.eth.net.getId()
     dispatch(web3LoadSuccess(web3, networkId))
   } catch (error) {
-    dispatch(web3LoadError(error.message))
+    console.dir(error);
+    dispatch(web3LoadError("Error connecting Web3 wallet"))
   }
 
   return web3
