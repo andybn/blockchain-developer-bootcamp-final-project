@@ -11,7 +11,7 @@ import {
   accountSelector,
   networkSelector,
 } from '../../redux/selectors'
-import ExpenseGroupMemberForm from '../../component/expense-group-member-form/ExpenseGroupMemberForm'
+import ExpenseGroupMemberAddForm from '../../component/expense-group-member-add-form/ExpenseGroupMemberAddForm'
 class ExpenseGroupMemberAddPage extends Component {
   async componentDidMount() {
     this.initialize()
@@ -87,7 +87,7 @@ class ExpenseGroupMemberAddPage extends Component {
     return (
       <Grid container>
         <Grid item xs={12}>
-          <ExpenseGroupMemberForm></ExpenseGroupMemberForm>
+          <ExpenseGroupMemberAddForm></ExpenseGroupMemberAddForm>
         </Grid>
         <Grid item xs={12}>
           <ButtonGroup
