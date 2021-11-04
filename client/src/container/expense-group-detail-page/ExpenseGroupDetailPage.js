@@ -97,18 +97,18 @@ class ExpenseGroupDetailPage extends Component {
 
     return (
       <Grid container style={{ margin: 15 }}>
-        <Grid item xs={10}>
+        <Grid item xs={11}>
           <ExpenseGroupDetailToolbar
             address={address}
           ></ExpenseGroupDetailToolbar>
         </Grid>
         {!loading && (
-          <Grid item xs={10}>
+          <Grid item xs={11}>
             <ExpenseGroupBalanceChart members={members}></ExpenseGroupBalanceChart>
           </Grid>
         )}    
         {!loading && (
-          <Grid item xs={10}>
+          <Grid item xs={11}>
             {expenses && expenses.length > 0 && (
               <Table>
                 <TableHead>
@@ -174,7 +174,7 @@ class ExpenseGroupDetailPage extends Component {
           </Grid>
         )}
         {!loading && (
-          <Grid item xs={10}>
+          <Grid item xs={11}>
             <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
           </Grid>
         )}        

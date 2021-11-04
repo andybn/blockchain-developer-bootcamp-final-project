@@ -92,7 +92,7 @@ class ExpenseGroupExpenseAddPage extends Component {
 
     return (
       <Grid container style={{ margin: 15 }}>
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <ButtonGroup
             color="primary"
             aria-label="outlined primary button group"

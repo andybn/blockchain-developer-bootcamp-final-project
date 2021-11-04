@@ -9,8 +9,9 @@ import {
   loadingSelector,
   errorSelector,
   accountSelector,
-  networkSelector
+  networkSelector,
 } from '../../redux/selectors'
+import ExpenseGroupMemberForm from '../../component/expense-group-member-form/ExpenseGroupMemberForm'
 class ExpenseGroupMemberAddPage extends Component {
   async componentDidMount() {
     this.initialize()
@@ -84,8 +85,11 @@ class ExpenseGroupMemberAddPage extends Component {
     }
 
     return (
-      <Grid container style={{ margin: 15 }}>
-        <Grid item xs={10}>
+      <Grid container>
+        <Grid item xs={12}>
+          <ExpenseGroupMemberForm></ExpenseGroupMemberForm>
+        </Grid>
+        <Grid item xs={12}>
           <ButtonGroup
             color="primary"
             aria-label="outlined primary button group"
@@ -112,7 +116,7 @@ function mapStateToProps(state) {
     account: accountSelector(state),
     loading: loadingSelector(state),
     error: errorSelector(state),
-    networkId: networkSelector(state)
+    networkId: networkSelector(state),
   }
 }
 

@@ -62,11 +62,11 @@ class ExpenseGroupsPage extends Component {
   render() {
     const { expenseGroups, loading } = this.props
     return (
-      <Grid container style={{ margin: 15 }}>
-        <Grid item xs={10}>
+      <Grid container item xs={12} style={{ margin: 15 }}>
+        <Grid item xs={12}>
           <ExpenseGroupsToolbar></ExpenseGroupsToolbar>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={11}>
           {!loading && (
             <ExpenseGroupList
               expenseGroupContracts={expenseGroups}
