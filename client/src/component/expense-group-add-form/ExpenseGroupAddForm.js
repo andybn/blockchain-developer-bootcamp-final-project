@@ -6,7 +6,8 @@ import {
   CardActions,
   TextField,
   Button,
-  Typography
+  FormLabel,
+  Typography,
 } from '@material-ui/core'
 import validationsForm from './validationSchema'
 import { withFormik } from 'formik'
@@ -45,10 +46,10 @@ const form = (props) => {
       <form onSubmit={handleSubmit}>
         <Card className={classes.card}>
           <CardContent>
-            <Typography>New member</Typography>
+            <Typography>New expense group</Typography>
             <TextField
               id="name"
-              label="Member name"
+              label="Owner name"
               autoFocus={true}
               value={values.name}
               onChange={handleChange}
@@ -60,13 +61,13 @@ const form = (props) => {
               fullWidth
             />
             <TextField
-              id="address"
-              label="External account address"
-              value={values.address}
+              id="title"
+              label="Expense group title"
+              value={values.title}
               onChange={handleChange}
               onBlur={handleBlur}
-              helperText={touched.address ? errors.address : ''}
-              error={touched.address && Boolean(errors.address)}
+              helperText={touched.title ? errors.title : ''}
+              error={touched.title && Boolean(errors.title)}
               margin="dense"
               variant="outlined"
               fullWidth
@@ -90,11 +91,11 @@ const form = (props) => {
   )
 }
 
-const ExpenseGroupMemberForm = withFormik({
-  mapPropsToValues: ({ name, address }) => {
+const ExpenseGroupForm = withFormik({
+  mapPropsToValues: ({ name, title }) => {
     return {
       name: name || '',
-      address: address || '',
+      title: title || '',
     }
   },
 
@@ -106,4 +107,4 @@ const ExpenseGroupMemberForm = withFormik({
   },
 })(form)
 
-export default withStyles(styles)(ExpenseGroupMemberForm)
+export default withStyles(styles)(ExpenseGroupForm)

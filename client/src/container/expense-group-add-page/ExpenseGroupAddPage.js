@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button, Grid, ButtonGroup } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { loadFactoryContract, addExpenseGroup } from '../../redux/interactions'
 import {
   factoryContractSelector,
@@ -10,6 +10,7 @@ import {
   accountSelector,
   networkSelector,
 } from '../../redux/selectors'
+import ExpenseGroupAddForm from '../../component/expense-group-add-form/ExpenseGroupAddForm'
 class ExpenseGroupAddPage extends Component {
   async componentDidMount() {
     this.initialize()
@@ -57,12 +58,11 @@ class ExpenseGroupAddPage extends Component {
 
     const { dispatch, factoryContract, web3, account } = this.props
 
-    const prepareExpenseGroupForInsertion = async (e) => {
-      e.preventDefault()
-
+    const prepareExpenseGroupForInsertion = async (values) => {
+      
       const expenseGroup = {
-        ownerName: 'me',
-        title: 'WorldTrip',
+        ownerName: values.name,
+        title: values.title,
       }
 
       try {
@@ -74,15 +74,8 @@ class ExpenseGroupAddPage extends Component {
 
     return (
       <Grid container style={{ margin: 15 }}>
-        <Grid item xs={10}>
-          <ButtonGroup
-            color="primary"
-            aria-label="outlined primary button group"
-          >
-            <Button disabled={!web3} variant="outlined" onClick={prepareExpenseGroupForInsertion} color="inherit">
-              [ADD NEW EXPENSE GROUP]
-            </Button>
-          </ButtonGroup>
+        <Grid item xs={12}>
+          <ExpenseGroupAddForm onSubmit={prepareExpenseGroupForInsertion} isWalletConnected={web3}></ExpenseGroupAddForm>
         </Grid>
       </Grid>
     )
