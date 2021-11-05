@@ -5,7 +5,6 @@ import {
   CardContent,
   CardActions,
   TextField,
-  MenuItem,
   Button
 } from "@material-ui/core";
 import validationsForm from "./validationSchema";
@@ -26,21 +25,6 @@ const styles = () => ({
   }
 });
 
-const courseCategory = [
-  {
-    value: "webDevelopment",
-    label: "Web Development"
-  },
-  {
-    value: "networking",
-    label: "Networking"
-  },
-  {
-    value: "computerScience",
-    label: "Computer Science"
-  }
-];
-
 const form = props => {
   const {
     classes,
@@ -51,29 +35,19 @@ const form = props => {
     handleChange,
     handleBlur,
     handleSubmit,
-    handleReset
+    handleReset,
+    isWalletConnected
   } = props;
 
   return (
     <div className={classes.container}>
       <form onSubmit={handleSubmit}>
         <Card className={classes.card}>
-          <CardContent>
-            <TextField
-              id="website"
-              label="Website"
-              value={values.website}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              helperText={touched.website ? errors.website : ""}
-              error={touched.website && Boolean(errors.website)}
-              margin="dense"
-              variant="outlined"
-              fullWidth
-            />
+          <CardContent>          
             <TextField
               id="name"
-              label="First Name"
+              label="Member name"
+              autoFocus={true}
               value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -84,77 +58,20 @@ const form = props => {
               fullWidth
             />
             <TextField
-              id="surname"
-              label="Last Name"
-              value={values.surname}
+              id="address"
+              label="External account address"
+              value={values.address}
               onChange={handleChange}
               onBlur={handleBlur}
-              helperText={touched.surname ? errors.surname : ""}
-              error={touched.surname && Boolean(errors.surname)}
+              helperText={touched.address ? errors.address : ""}
+              error={touched.address && Boolean(errors.address)}
               margin="dense"
               variant="outlined"
               fullWidth
-            />
-            <TextField
-              id="email"
-              label="Email"
-              type="email"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              helperText={touched.email ? errors.email : ""}
-              error={touched.email && Boolean(errors.email)}
-              margin="dense"
-              variant="outlined"
-              fullWidth
-            />
-            <TextField
-              select
-              id="course"
-              label="Course Category"
-              value={values.course}
-              onChange={handleChange("course")}
-              helperText={touched.course ? errors.course : ""}
-              error={touched.course && Boolean(errors.course)}
-              margin="dense"
-              variant="outlined"
-              fullWidth
-            >
-              {courseCategory.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              id="password"
-              label="Password"
-              type="password"
-              value={values.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              helperText={touched.password ? errors.password : ""}
-              error={touched.password && Boolean(errors.password)}
-              margin="dense"
-              variant="outlined"
-              fullWidth
-            />
-            <TextField
-              id="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              value={values.confirmPassword}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              helperText={touched.confirmPassword ? errors.confirmPassword : ""}
-              error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-              margin="dense"
-              variant="outlined"
-              fullWidth
-            />
+            />         
           </CardContent>
           <CardActions className={classes.actions}>
-            <Button type="submit" color="primary" disabled={isSubmitting}>
+            <Button type="submit" color="primary" disabled={isSubmitting || !isWalletConnected}>
               SUBMIT
             </Button>
             <Button color="secondary" onClick={handleReset}>
@@ -168,34 +85,21 @@ const form = props => {
 };
 
 const ExpenseGroupMemberForm = withFormik({
-  mapPropsToValues: ({
-    website,
+  mapPropsToValues: ({   
     name,
-    surname,
-    email,
-    course,
-    password,
-    confirmPassword
+    address
   }) => {
     return {
-      website: website || "",
       name: name || "",
-      surname: surname || "",
-      email: email || "",
-      course: course || "",
-      password: password || "",
-      confirmPassword: confirmPassword || ""
+      address: address || ""
     };
   },
 
   validationSchema: yup.object().shape(validationsForm),
 
-  handleSubmit: (values, { setSubmitting }) => {
-    setTimeout(() => {
-      // submit to the server
-      alert(JSON.stringify(values, null, 2));
+  handleSubmit: async (values, { props, setSubmitting }) => {
+      await props.onSubmit(values);
       setSubmitting(false);
-    }, 1000);
   }
 })(form);
 

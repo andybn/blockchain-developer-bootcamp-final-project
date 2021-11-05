@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Button, Grid, ButtonGroup } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { loadExpenseGroupContract, addMember } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
@@ -65,16 +65,14 @@ class ExpenseGroupMemberAddPage extends Component {
   }
 
   render() {
-    const address = this.props.match.params.contractAddress
-
+    
     const { dispatch, contract, account, web3 } = this.props
 
-    const prepareMemberForInsertion = async (e) => {
-      e.preventDefault()
-
+    const prepareMemberForInsertion = async (values) => {
+   
       const member = {
-        name: 'member1',
-        address: '0x0747abf29Ed045f4beb334a8A8FC23a3BF1E6dF7',
+        name: values.name,
+        address: values.address
       }
 
       try {
@@ -87,22 +85,7 @@ class ExpenseGroupMemberAddPage extends Component {
     return (
       <Grid container>
         <Grid item xs={12}>
-          <ExpenseGroupMemberAddForm></ExpenseGroupMemberAddForm>
-        </Grid>
-        <Grid item xs={12}>
-          <ButtonGroup
-            color="primary"
-            aria-label="outlined primary button group"
-          >
-            <Button
-              variant="outlined"
-              onClick={prepareMemberForInsertion}
-              disabled={!web3}
-              color="inherit"
-            >
-              [ADD MEMBER TO EXPENSE GROUP {address} ]
-            </Button>
-          </ButtonGroup>
+          <ExpenseGroupMemberAddForm onSubmit={prepareMemberForInsertion} isWalletConnected={web3}></ExpenseGroupMemberAddForm>
         </Grid>
       </Grid>
     )

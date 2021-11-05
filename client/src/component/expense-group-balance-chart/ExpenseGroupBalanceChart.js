@@ -9,8 +9,7 @@ import {
   Tooltip,
   Legend,
   ReferenceLine,
-  ResponsiveContainer,
-  Label
+  ResponsiveContainer
 } from 'recharts'
 
 const ExpenseGroupBalanceChart = (props) => {
@@ -20,12 +19,7 @@ const ExpenseGroupBalanceChart = (props) => {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={props.members}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name">
-              {/* <Label
-                value="Expense group members balance"
-                offset={0}
-                position="insideBottom"
-              /> */}
+            <XAxis dataKey="name">           
             </XAxis>
             <YAxis label={{ value: 'amount', angle: -90, position: 'insideLeft' }} />
             <Tooltip />
