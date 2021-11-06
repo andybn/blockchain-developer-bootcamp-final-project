@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Button, Grid, ButtonGroup } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import {
   loadExpenseGroupContract,
   addExpense,
@@ -14,8 +14,10 @@ import {
   loadingSelector,
   errorSelector,
   accountSelector,
-  networkSelector
+  networkSelector,
 } from '../../redux/selectors'
+import ExpenseGroupExpenseAddForm from '../../component/expense-group-expense-add-form/ExpenseGroupExpenseAddForm'
+
 class ExpenseGroupExpenseAddPage extends Component {
   async componentDidMount() {
     this.initialize()
@@ -73,13 +75,11 @@ class ExpenseGroupExpenseAddPage extends Component {
 
     const { dispatch, contract, account, members, web3 } = this.props
 
-    const prepareExpenseForInsertion = async (e) => {
-      e.preventDefault()
-
+    const prepareExpenseForInsertion = async (values) => {
       const expense = {
-        name: 'test',
-        amount: 5000,
-        valueDate: Date.now(),
+        name: values.name,
+        amount: values.amount,
+        valueDate: new Date(values.valueDate).getTime() / 1000 + 900 + 330 * 60,
         payees: [String(members[0].memberAddress)],
       }
 
@@ -93,19 +93,10 @@ class ExpenseGroupExpenseAddPage extends Component {
     return (
       <Grid container style={{ margin: 15 }}>
         <Grid item xs={12}>
-          <ButtonGroup
-            color="primary"
-            aria-label="outlined primary button group"
-          >
-            <Button
-              onClick={prepareExpenseForInsertion}
-              disabled={!web3}
-              variant="outlined"
-              color="inherit"
-            >
-              [ADD EXPENSE TO EXPENSE GROUP {address} ]
-            </Button>
-          </ButtonGroup>
+          <ExpenseGroupExpenseAddForm
+            onSubmit={prepareExpenseForInsertion}
+            isWalletConnected={web3}
+          ></ExpenseGroupExpenseAddForm>
         </Grid>
       </Grid>
     )
@@ -120,7 +111,7 @@ function mapStateToProps(state) {
     members: expenseGroupMembersSelector(state),
     loading: loadingSelector(state),
     error: errorSelector(state),
-    networkId: networkSelector(state)
+    networkId: networkSelector(state),
   }
 }
 
