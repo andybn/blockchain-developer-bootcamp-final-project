@@ -11,6 +11,7 @@ import {
 import validationsForm from './validationSchema'
 import { withFormik } from 'formik'
 import * as yup from 'yup'
+import { getFormattedDate } from '../../common/utils'
 
 const styles = () => ({
   card: {
@@ -40,6 +41,11 @@ const form = (props) => {
     isWalletConnected,
   } = props
 
+  const defaults = {
+    valueDate: getFormattedDate(new Date())
+  };
+  
+
   return (
     <div className={classes.container}>
       <form onSubmit={handleSubmit}>
@@ -62,6 +68,7 @@ const form = (props) => {
             <TextField
               id="amount"
               label="Amount"
+              type="number"
               value={values.amount}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -73,8 +80,8 @@ const form = (props) => {
             />
             <TextField
               id="valueDate"
-              label="Value date (mm/dd/aaaa)"
-              value={values.valueDate}
+              label="Value date"              
+              defaultValue={defaults.valueDate}
               onChange={handleChange}
               onBlur={handleBlur}
               helperText={touched.valueDate ? errors.valueDate : ''}
@@ -107,7 +114,7 @@ const ExpenseGroupExpenseAddForm = withFormik({
     return {
       name: name || '',
       amount: amount || '',
-      valueDate: valueDate || '',
+      valueDate: valueDate || getFormattedDate(new Date()),
     }
   },
 

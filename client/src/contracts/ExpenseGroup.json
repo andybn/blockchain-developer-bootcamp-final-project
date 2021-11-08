@@ -50141,10 +50141,16 @@
       "links": {},
       "address": "0x49EDDD839e90A2025f004D980166408D1E38E351",
       "transactionHash": "0x2afb9b03773a906fafbe29528122d00da725a47518fa9634b5ab631d2bca0315"
+    },
+    "1636306431088": {
+      "events": {},
+      "links": {},
+      "address": "0xDBFAC8E198B8b810262ee9e14f0986aa8fc9e062",
+      "transactionHash": "0xcb927f3ef5ab79231a0fb9f5e8187358c956e501fa6adc897f838c90beec5f63"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-03T21:49:00.205Z",
+  "updatedAt": "2021-11-07T17:34:05.144Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Andrés Buenestado",

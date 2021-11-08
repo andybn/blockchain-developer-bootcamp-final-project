@@ -8,7 +8,7 @@ const validationsForm = {
     "address-check",
     "Ethereum address account format is incorrect",
     value => {      
-      return Web3.utils.isAddress(value);
+      return Web3 ? Web3.utils.isAddress(value) : false
     }
   )
 };
