@@ -439,6 +439,7 @@ export const approve = async (
       .on('receipt', async (receipt) => {
         dispatch(expenseGroupExpenseApproveSuccess({ expenseId, approved }))
         await loadExpenses(dispatch, contract, account)
+        await loadMembers(dispatch, contract)
         history.push(`/expense-group/${contract.options.address}`)
         showFeedback(dispatch, {
           text: `Expense succesfully approved. Transaction hash: ${receipt.transactionHash}. Block: ${receipt.blockNumber}`,

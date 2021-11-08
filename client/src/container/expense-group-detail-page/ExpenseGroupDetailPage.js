@@ -4,7 +4,7 @@ import {
   loadExpenseGroupContract,
   loadExpenses,
   loadMembers,
-  approve
+  approve,
 } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
@@ -27,7 +27,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Button
+  Button,
 } from '@material-ui/core'
 
 class ExpenseGroupDetailPage extends Component {
@@ -45,6 +45,7 @@ class ExpenseGroupDetailPage extends Component {
     if (
       (this.isContractNotLoaded() ||
         this.hasContractChanged() ||
+        this.hasAccountChanged(prevProps) ||
         this.hasNetworkChanged(prevProps)) &&
       !loading &&
       !error &&
@@ -70,6 +71,11 @@ class ExpenseGroupDetailPage extends Component {
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
   }
 
+  hasAccountChanged(prevProps) {
+    const { account } = this.props
+    return prevProps && prevProps.account && prevProps.account !== account
+  }
+
   async loadData(props) {
     try {
       let { contract } = props
@@ -82,14 +88,28 @@ class ExpenseGroupDetailPage extends Component {
       console.log(error)
     }
   }
-  
+
   render() {
-    const { members, expenses, contract, loading, web3, account, dispatch } = this.props
+    const {
+      members,
+      expenses,
+      contract,
+      loading,
+      web3,
+      account,
+      dispatch,
+    } = this.props
     const address = this.props.match.params.contractAddress
 
     const approveExpense = async (expense) => {
       try {
-        await approve(dispatch, contract, account, expense.identifier, !expense.approved)
+        await approve(
+          dispatch,
+          contract,
+          account,
+          expense.identifier,
+          !expense.approved
+        )
       } catch (error) {
         console.log(error)
       }
@@ -104,9 +124,11 @@ class ExpenseGroupDetailPage extends Component {
         </Grid>
         {!loading && (
           <Grid item xs={11}>
-            <ExpenseGroupBalanceChart members={members}></ExpenseGroupBalanceChart>
+            <ExpenseGroupBalanceChart
+              members={members}
+            ></ExpenseGroupBalanceChart>
           </Grid>
-        )}    
+        )}
         {!loading && (
           <Grid item xs={11}>
             {expenses && expenses.length > 0 && (
@@ -143,19 +165,7 @@ class ExpenseGroupDetailPage extends Component {
                       <TableCell title={row.payerWithName.address} align="left">
                         {row.payerWithName.name}
                       </TableCell>
-                      <TableCell>
-                        <Table>
-                          <TableBody>
-                            {row.payees.map((payee) => (
-                              <TableRow key={payee.address}>
-                                <TableCell title={payee.address} align="left">
-                                  {payee.name}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableCell>
+                      <TableCell>{row.payees.map( x=> x.name).join(', ')}</TableCell>
                       <TableCell>
                         <Button
                           onClick={() => approveExpense(row)}
@@ -163,7 +173,7 @@ class ExpenseGroupDetailPage extends Component {
                           variant="outlined"
                           color="inherit"
                         >
-                          { row.approved ? "Unapprove" : "Approve" }
+                          {row.approved ? 'Unapprove' : 'Approve'}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -177,8 +187,7 @@ class ExpenseGroupDetailPage extends Component {
           <Grid item xs={11}>
             <ExpenseGroupMemberList members={members}></ExpenseGroupMemberList>
           </Grid>
-        )}        
-        
+        )}
       </Grid>
     )
   }

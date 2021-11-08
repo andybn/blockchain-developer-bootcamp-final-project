@@ -34,6 +34,7 @@ class ExpenseGroupExpenseAddPage extends Component {
     if (
       (this.isContractNotLoaded() ||
         this.hasContractChanged() ||
+        this.hasAccountChanged(prevProps) ||
         this.hasNetworkChanged(prevProps)) &&
       !loading &&
       !error &&
@@ -57,6 +58,11 @@ class ExpenseGroupExpenseAddPage extends Component {
   hasNetworkChanged(prevProps) {
     const { networkId } = this.props
     return prevProps && prevProps.networkId && prevProps.networkId !== networkId
+  }
+
+  hasAccountChanged(prevProps) {
+    const { account } = this.props
+    return prevProps && prevProps.account && prevProps.account !== account
   }
 
   async loadData() {
