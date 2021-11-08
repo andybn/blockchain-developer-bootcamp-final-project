@@ -9,9 +9,10 @@ import {
   Typography,
 } from '@material-ui/core'
 import validationsForm from './validationSchema'
-import { withFormik } from 'formik'
+import { withFormik, Field } from 'formik'
 import * as yup from 'yup'
 import { getFormattedDate } from '../../common/utils'
+import CustomCheckbox from '../custom-check-box/CustomCheckBox'
 
 const styles = () => ({
   card: {
@@ -25,6 +26,9 @@ const styles = () => ({
   actions: {
     float: 'right',
   },
+  checkBoxGroup: {
+    marginTop: '5px'
+  }
 })
 
 const form = (props) => {
@@ -39,12 +43,14 @@ const form = (props) => {
     handleSubmit,
     handleReset,
     isWalletConnected,
+    members,
   } = props
 
   const defaults = {
-    valueDate: getFormattedDate(new Date())
-  };
-  
+    valueDate: getFormattedDate(new Date()),
+  }
+
+  const availableMembers = members ? members : []
 
   return (
     <div className={classes.container}>
@@ -80,7 +86,7 @@ const form = (props) => {
             />
             <TextField
               id="valueDate"
-              label="Value date"              
+              label="Value date"
               defaultValue={defaults.valueDate}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -90,6 +96,19 @@ const form = (props) => {
               variant="outlined"
               fullWidth
             />
+            <div className={classes.checkBoxGroup}>
+              <Typography>Members involved:</Typography>
+              {availableMembers.map((member) => (
+                <div key={member.memberAddress} className={classes.checkBoxGroup}>
+                  <Field
+                    component={CustomCheckbox}                    
+                    name="members"
+                    value={member.memberAddress}
+                    label={member.name}
+                  />
+                </div>
+              ))}
+            </div>
           </CardContent>
           <CardActions className={classes.actions}>
             <Button
@@ -114,7 +133,7 @@ const ExpenseGroupExpenseAddForm = withFormik({
     return {
       name: name || '',
       amount: amount || '',
-      valueDate: valueDate || getFormattedDate(new Date()),
+      valueDate: valueDate || getFormattedDate(new Date())
     }
   },
 

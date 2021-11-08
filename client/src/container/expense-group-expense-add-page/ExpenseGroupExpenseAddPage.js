@@ -71,16 +71,17 @@ class ExpenseGroupExpenseAddPage extends Component {
   }
 
   render() {
-    const address = this.props.match.params.contractAddress
+    
 
     const { dispatch, contract, account, members, web3 } = this.props
 
     const prepareExpenseForInsertion = async (values) => {
+      
       const expense = {
         name: values.name,
         amount: values.amount,
         valueDate: new Date(values.valueDate).getTime() / 1000 + 900 + 330 * 60,
-        payees: [String(members[0].memberAddress)],
+        payees: values.members,
       }
 
       try {
@@ -95,6 +96,7 @@ class ExpenseGroupExpenseAddPage extends Component {
         <Grid item xs={12}>
           <ExpenseGroupExpenseAddForm
             onSubmit={prepareExpenseForInsertion}
+            members={members}
             isWalletConnected={web3}
           ></ExpenseGroupExpenseAddForm>
         </Grid>
