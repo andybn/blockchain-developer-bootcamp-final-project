@@ -6,6 +6,7 @@ import {
   loadExpenseGroupContract,
   addExpense,
   loadMembers,
+  showFeedback
 } from '../../redux/interactions'
 import {
   expenseGroupContractSelector,
@@ -81,7 +82,16 @@ class ExpenseGroupExpenseAddPage extends Component {
         name: values.name,
         amount: values.amount,
         valueDate: new Date(values.valueDate).getTime() / 1000 + 900 + 330 * 60,
-        payees: values.members,
+        payees: values.members
+      }
+
+      if(!values.members || values.members.length === 0) {
+        showFeedback(dispatch, {
+          text: `At least one member must be selected`,
+          type: 'error',
+          visible: true,
+        })
+        return;
       }
 
       try {
