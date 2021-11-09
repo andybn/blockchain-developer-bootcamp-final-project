@@ -12,6 +12,7 @@ import { loadingSelector } from '../../redux/selectors'
 import FeedbackBar from '../feedback-bar/FeedbackBar'
 import { clearFeedback } from '../../redux/interactions'
 import history from '../../common/history'
+import HomePage from '../home-page/HomePage'
 
 class App extends Component {
   componentDidMount() {
@@ -35,7 +36,12 @@ class App extends Component {
         {loading && <BlockLoading />}
         <div className="App">
           <Switch>
-            <Route exact path="/" component={ExpenseGroupsPage} />
+            <Route exact path="/" component={HomePage} />
+            <Route
+              exact
+              path="/expense-groups"
+              component={ExpenseGroupsPage}
+            />
             <Route
               exact
               path="/expense-group/:contractAddress"

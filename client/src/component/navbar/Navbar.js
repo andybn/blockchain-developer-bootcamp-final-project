@@ -10,15 +10,15 @@ const Navbar = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton
-          edge="start"        
-          color="inherit"
-        >
+        <IconButton edge="start" color="inherit">
           <AssesmentIcon />
         </IconButton>
         <Typography variant="h6">Go dutch!</Typography>
-        <Box display="flex" flexGrow={1} marginLeft="40px">
+        <Box display="flex" flexGrow={1}>
           <Link className={classes.link} to="/">
+            Home
+          </Link>
+          <Link className={classes.link} to="/expense-groups">
             Expense groups
           </Link>
         </Box>
@@ -38,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
   link: {
     color: 'white',
     textDecoration: 'none',
+    marginRight: '10px',
+    marginLeft: '20px'
   },
 }))
 
