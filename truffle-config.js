@@ -5,7 +5,12 @@ const infuraRinkebyURL = 'https://rinkeby.infura.io/v3/44920c3d0bbb4f5989962a9d4
 const infuraRopstenURL = 'https://ropsten.infura.io/v3/44920c3d0bbb4f5989962a9d43a1cb28' 
 
 const fs = require('fs');
-const mnemonic = fs.readFileSync(".secret").toString().trim();
+var mnemonic = '';
+
+var secretFilePath = '.secret';
+if(fs.existsSync(secretFilePath)) {
+    mnemonic = fs.readFileSync(secretFilePath).toString().trim();
+}
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
