@@ -1,0 +1,29 @@
+RINKEBY
+===========
+Deploying 'ExpenseGroupFactory'
+   -------------------------------
+   > transaction hash:    0xdefa1fd4961196bb6d4ed5c1404cfb68a7a6f072c8fe25a13632b8329a88376c
+   > Blocks: 0            Seconds: 8
+   > contract address:    0x268FeDA1d73C743935c97fc63b698E75445F1541
+   > block number:        9628900
+   > block timestamp:     1636715961
+   > account:             0xBf33460d0b77f8E495CB069494A92aC13a8a29F8
+   > balance:             18.749750940997555326
+   > gas used:            4510891 (0x44d4ab)
+   > gas price:           1.000000009 gwei
+   > value sent:          0 ETH
+   > total cost:          0.004510891040598019 ETH
+
+   Deploying 'ExpenseGroup'
+   ------------------------
+   > transaction hash:    0x45207314d74c5725787ddb940a9482c072cc74179b167002e9234d6f2bee72e6
+   > Blocks: 0            Seconds: 8
+   > contract address:    0x25c78e23E3100D561a805fB0651de822e34f9928
+   > block number:        9628901
+   > block timestamp:     1636715976
+   > account:             0xBf33460d0b77f8E495CB069494A92aC13a8a29F8
+   > balance:             18.741725140921808217
+   > gas used:            3514909 (0x35a21d)
+   > gas price:           1.00000001 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00351490903514909 ETH

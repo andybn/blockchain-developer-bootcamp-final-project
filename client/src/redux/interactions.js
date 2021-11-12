@@ -44,7 +44,7 @@ import ExpenseGroupFactoryContract from '../contracts/ExpenseGroupFactory.json'
 import ExpenseGroupContract from '../contracts/ExpenseGroup.json'
 import history from '../common/history'
 
-export const numberOfConfirmationsToProvideFeedback = 5
+export const numberOfConfirmationsToProvideFeedback = 3
 
 export const loadWeb3 = async (dispatch) => {
   let web3
@@ -90,9 +90,8 @@ export const changeNetwork = async (dispatch, networkId) => {
   return networkId
 }
 
-export const isValidNetwork = (networkId) => {
-  //TODO: Improve when it is deployed to testnets
-  return networkId > 100
+export const isValidNetwork = (networkId) => {  
+  return networkId > 100 || networkId === 4
 }
 
 export const loadFactoryContract = async (dispatch, web3) => {
@@ -192,18 +191,17 @@ export const addExpenseGroup = async (
         dispatch(expenseGroupAddSuccess(expenseGroup))
 
         await loadExpenseGroupContracts(dispatch, contract, web3)
-        history.push('/')
+        history.push('/expense-groups')
         showFeedback(dispatch, {
           text: `Expense group succesfully added. Transaction hash: ${receipt.transactionHash}. Block: ${receipt.blockNumber}`,
           type: 'success',
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {
-        console.log(confirmationNumber)
+      .on('confirmation', (confirmationNumber) => {       
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
-            text: `Expense group insertion transaction confirmed (${confirmationNumber}) times`,
+            text: `Expense group insertion transaction confirmed ${confirmationNumber} times`,
             type: 'success',
             visible: true,
           })
@@ -358,11 +356,10 @@ export const addExpense = async (dispatch, contract, account, expense) => {
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {
-        console.log(confirmationNumber)
+      .on('confirmation', (confirmationNumber) => {        
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
-            text: `Expense insertion transaction confirmed (${confirmationNumber}) times`,
+            text: `Expense insertion transaction confirmed ${confirmationNumber} times`,
             type: 'success',
             visible: true,
           })
@@ -399,11 +396,10 @@ export const addMember = async (dispatch, contract, account, member) => {
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {
-        console.log(confirmationNumber)
+      .on('confirmation', (confirmationNumber) => {        
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
-            text: `Member insertion transaction confirmed (${confirmationNumber}) times`,
+            text: `Member insertion transaction confirmed ${confirmationNumber} times`,
             type: 'success',
             visible: true,
           })
@@ -447,11 +443,10 @@ export const approve = async (
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {
-        console.log(confirmationNumber)
+      .on('confirmation', (confirmationNumber) => {        
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
-            text: `Expense approval transaction confirmed (${confirmationNumber}) times`,
+            text: `Expense approval transaction confirmed ${confirmationNumber} times`,
             type: 'success',
             visible: true,
           })

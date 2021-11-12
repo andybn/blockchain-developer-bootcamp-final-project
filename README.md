@@ -26,7 +26,7 @@ In order to keep it simple for learning purposes the initial scope and user stor
 ## Technical stack
 
 * Javascript
-* React
+* React / Redux
 * Solidity
 * Truffle
 * Web3
