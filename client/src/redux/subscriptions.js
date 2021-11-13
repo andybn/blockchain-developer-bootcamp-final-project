@@ -10,7 +10,7 @@ export const subscribeToAccountsChanging = (dispatch, web3) => {
 
 export const subscribeToNetworkChanging = (dispatch) => {
   if (window.ethereum) {
-    window.ethereum.on('chainChanged', async function (networkId) {
+    window.ethereum.on('networkChanged', async function (networkId) {
       await changeNetwork(dispatch, networkId)
     })
   }
