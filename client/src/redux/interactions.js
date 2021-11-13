@@ -47,7 +47,6 @@ import history from '../common/history'
 export const numberOfConfirmationsToProvideFeedback = 3
 
 export const loadWeb3 = async (dispatch) => {
-  
   let web3 = null
   dispatch(web3Load())
 
@@ -78,13 +77,10 @@ const handleEthereum = async (dispatch) => {
       const networkId = await web3.eth.net.getId()
       dispatch(web3LoadSuccess(web3, networkId))
 
-      showFeedback(dispatch, {
-        text: 'Wallet connected',
-        type: 'success',
-        visible: true,
-      })
+      changeNetwork(dispatch, networkId)
+
     } catch (error) {
-      dispatch(web3LoadError('Error connecting wallet. Install Metamask.'))
+      dispatch(web3LoadError('Error connecting wallet'))
     }
   }
 
@@ -114,9 +110,16 @@ export const changeNetwork = async (dispatch, networkId) => {
 
   try {
     if (!isValidNetwork(networkId)) {
-      throw new Error('Invalid network')
+      throw new Error('Network not supported')
     }
     dispatch(networkChangeSuccess(networkId))
+
+    showFeedback(dispatch, {
+      text: 'Wallet connected',
+      type: 'success',
+      visible: true,
+    })
+
   } catch (error) {
     dispatch(networkChangeError(networkId, error.message))
   }
