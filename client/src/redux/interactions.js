@@ -83,7 +83,7 @@ const handleEthereum = async (dispatch) => {
         visible: true,
       })
     } catch (error) {
-      dispatch(web3LoadError('Error connecting Web3 wallet'))
+      dispatch(web3LoadError('Error connecting wallet. Install Metamask.'))
     }
   }
 
