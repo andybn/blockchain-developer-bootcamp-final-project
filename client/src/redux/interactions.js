@@ -75,8 +75,12 @@ const handleEthereum = async (dispatch) => {
         method: 'eth_requestAccounts',
       })
 
-      const networkId = await web3.eth.net.getId()
+      // const networkId = await web3.eth.net.getId()
+      // dispatch(web3LoadSuccess(web3, networkId))
+
+      const networkId = 4
       dispatch(web3LoadSuccess(web3, networkId))
+
       showFeedback(dispatch, {
         text: 'Wallet connected',
         type: 'success',
