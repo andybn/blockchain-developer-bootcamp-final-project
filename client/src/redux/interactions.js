@@ -75,10 +75,7 @@ const handleEthereum = async (dispatch) => {
         method: 'eth_requestAccounts',
       })
 
-      // const networkId = await web3.eth.net.getId()
-      // dispatch(web3LoadSuccess(web3, networkId))
-
-      const networkId = 4
+      const networkId = await web3.eth.net.getId()
       dispatch(web3LoadSuccess(web3, networkId))
 
       showFeedback(dispatch, {
