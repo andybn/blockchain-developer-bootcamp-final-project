@@ -1,4 +1,4 @@
-import getWeb3 from '../common/getWeb3'
+import Web3 from 'web3'
 import { tryExtractVMErrorMessage } from '../common/utils'
 import {
   web3Load,
@@ -47,18 +47,51 @@ import history from '../common/history'
 export const numberOfConfirmationsToProvideFeedback = 3
 
 export const loadWeb3 = async (dispatch) => {
-  let web3
+  
+  let web3 = null
   dispatch(web3Load())
-  try {
-    web3 = await getWeb3()
-    const networkId = await web3.eth.net.getId()
-    dispatch(web3LoadSuccess(web3, networkId))
-  } catch (error) {
-    console.dir(error);
-    dispatch(web3LoadError("Error connecting Web3 wallet"))
+
+  if (window.ethereum) {
+    web3 = handleEthereum(dispatch)
+  } else {
+    window.addEventListener('ethereum#initialized', handleEthereum, {
+      once: true,
+    })
+
+    await sleep(3000)
+    web3 = await handleEthereum(dispatch)
+  }
+  return web3
+}
+
+const handleEthereum = async (dispatch) => {
+  const { ethereum } = window
+  let web3 = null
+  if (ethereum && ethereum.isMetaMask) {
+    web3 = new Web3(window.ethereum)
+    try {
+      // Request account access if needed
+      await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
+
+      const networkId = await web3.eth.net.getId()
+      dispatch(web3LoadSuccess(web3, networkId))
+      showFeedback(dispatch, {
+        text: 'Wallet connected',
+        type: 'success',
+        visible: true,
+      })
+    } catch (error) {
+      dispatch(web3LoadError('Error connecting Web3 wallet'))
+    }
   }
 
   return web3
+}
+
+function sleep(time) {
+  return new Promise((resolve) => setTimeout(resolve, time))
 }
 
 export const loadAccount = async (dispatch, web3) => {
@@ -90,8 +123,9 @@ export const changeNetwork = async (dispatch, networkId) => {
   return networkId
 }
 
-export const isValidNetwork = (networkId) => {  
-  return networkId > 100 || networkId === 4
+export const isValidNetwork = (networkId) => {
+  // eslint-disable-next-line
+  return networkId == 4 || networkId > 100
 }
 
 export const loadFactoryContract = async (dispatch, web3) => {
@@ -109,14 +143,14 @@ export const loadFactoryContract = async (dispatch, web3) => {
 
     instance = new web3.eth.Contract(
       ExpenseGroupFactoryContract.abi,
-      deployedNetwork && deployedNetwork.address,
+      deployedNetwork && deployedNetwork.address
     )
 
     if (instance.options.address) {
       dispatch(factoryContractLoadSuccess(instance))
     } else {
       throw new Error(
-        'Error loading factory contract. Check contract deployment on current network.',
+        'Error loading factory contract. Check contract deployment on current network.'
       )
     }
   } catch (error) {
@@ -137,7 +171,7 @@ export const loadExpenseGroupContracts = async (dispatch, contract, web3) => {
     for (let i = 0; i < expenseGroups.length; i++) {
       const expenseGroupContractInstance = new web3.eth.Contract(
         ExpenseGroupContract.abi,
-        expenseGroups[i],
+        expenseGroups[i]
       )
 
       const title = await expenseGroupContractInstance.methods.title().call()
@@ -176,7 +210,7 @@ export const addExpenseGroup = async (
   contract,
   web3,
   account,
-  expenseGroup,
+  expenseGroup
 ) => {
   dispatch(expenseGroupAdd())
 
@@ -198,7 +232,7 @@ export const addExpenseGroup = async (
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {       
+      .on('confirmation', (confirmationNumber) => {
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
             text: `Expense group insertion transaction confirmed ${confirmationNumber} times`,
@@ -209,7 +243,7 @@ export const addExpenseGroup = async (
       })
       .on('error', (error) => {
         dispatch(
-          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message))
         )
       })
   } catch (error) {
@@ -220,7 +254,7 @@ export const addExpenseGroup = async (
 export const loadExpenseGroupContract = async (
   dispatch,
   web3,
-  contractAddress,
+  contractAddress
 ) => {
   let instance
   dispatch(expenseGroupContractLoad())
@@ -236,14 +270,14 @@ export const loadExpenseGroupContract = async (
 
     instance = new web3.eth.Contract(
       ExpenseGroupContract.abi,
-      deployedNetwork && contractAddress,
+      deployedNetwork && contractAddress
     )
 
     if (instance.options.address) {
       dispatch(expenseGroupContractLoadSuccess(instance))
     } else {
       throw new Error(
-        'Error loading factory contract. Check contract deployment on current network.',
+        'Error loading factory contract. Check contract deployment on current network.'
       )
     }
   } catch (error) {
@@ -289,7 +323,7 @@ export const loadExpenses = async (dispatch, contract, account) => {
       expense.approvals = await contract.methods.getNumberOfApprovals(i)
       expense.valueDate = new Date(+expense.valueDate * 1000).toDateString()
       expense.creationDate = new Date(
-        +expense.creationDate * 1000,
+        +expense.creationDate * 1000
       ).toDateString()
 
       const payer = expense.payer
@@ -304,7 +338,7 @@ export const loadExpenses = async (dispatch, contract, account) => {
         payeesAddresses.map(async (p) => ({
           address: p,
           name: await contract.methods.getMemberName(p).call(),
-        })),
+        }))
       )
 
       expense.approved = account
@@ -340,7 +374,7 @@ export const addExpense = async (dispatch, contract, account, expense) => {
         expense.name,
         expense.amount,
         expense.valueDate,
-        expense.payees,
+        expense.payees
       )
       .send({ from: account })
       .on('transactionHash', async (tx) => {
@@ -356,7 +390,7 @@ export const addExpense = async (dispatch, contract, account, expense) => {
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {        
+      .on('confirmation', (confirmationNumber) => {
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
             text: `Expense insertion transaction confirmed ${confirmationNumber} times`,
@@ -367,7 +401,7 @@ export const addExpense = async (dispatch, contract, account, expense) => {
       })
       .on('error', (error) => {
         dispatch(
-          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message))
         )
       })
   } catch (error) {
@@ -396,7 +430,7 @@ export const addMember = async (dispatch, contract, account, member) => {
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {        
+      .on('confirmation', (confirmationNumber) => {
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
             text: `Member insertion transaction confirmed ${confirmationNumber} times`,
@@ -407,7 +441,7 @@ export const addMember = async (dispatch, contract, account, member) => {
       })
       .on('error', (error) => {
         dispatch(
-          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message))
         )
       })
   } catch (error) {
@@ -421,7 +455,7 @@ export const approve = async (
   contract,
   account,
   expenseId,
-  approved,
+  approved
 ) => {
   dispatch(expenseGroupExpenseApprove())
 
@@ -443,7 +477,7 @@ export const approve = async (
           visible: true,
         })
       })
-      .on('confirmation', (confirmationNumber) => {        
+      .on('confirmation', (confirmationNumber) => {
         if (confirmationNumber === numberOfConfirmationsToProvideFeedback) {
           showFeedback(dispatch, {
             text: `Expense approval transaction confirmed ${confirmationNumber} times`,
@@ -454,7 +488,7 @@ export const approve = async (
       })
       .on('error', (error) => {
         dispatch(
-          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message)),
+          expenseGroupMemberAddError(tryExtractVMErrorMessage(error.message))
         )
       })
   } catch (error) {
