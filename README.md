@@ -70,7 +70,7 @@ https://godutchsharedexpenses.herokuapp.com/
 
 ## Screencast
 
-https://1drv.ms/u/s!Ap8Pj-xmB5iKg-QlL_X52vNWrdemSQ?e=RL2ckJ
+https://1drv.ms/u/s!Ap8Pj-xmB5iKg-QmCsnYzCDoYloU6Q?e=D9uT53
 
 ## Project structure
 
