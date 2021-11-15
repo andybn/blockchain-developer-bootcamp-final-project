@@ -67,6 +67,11 @@ Web3 dapp development supporting:
 ## Public hosting
 
 https://godutchsharedexpenses.herokuapp.com/
+
+## Screencast
+
+https://1drv.ms/u/s!Ap8Pj-xmB5iKg-QlL_X52vNWrdemSQ?e=RL2ckJ
+
 ## Project structure
 
 Scaffolding based on react-box (React official Truffle box)
