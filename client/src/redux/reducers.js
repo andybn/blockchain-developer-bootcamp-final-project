@@ -9,6 +9,7 @@ function rootReducer(state = {}, action) {
     case 'EXPENSE_GROUP_EXPENSES_LOAD':
     case 'EXPENSE_GROUP_ADD':
     case 'EXPENSE_GROUP_EXPENSE_ADD':
+    case 'EXPENSE_GROUP_MEMBER_ADD':
     case 'EXPENSE_GROUP_EXPENSE_APPROVE':
       return { ...state, fetchInProgress: true, error: null }
     case 'NETWORK_CHANGE':
