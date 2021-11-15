@@ -76,17 +76,17 @@ https://1drv.ms/u/s!Ap8Pj-xmB5iKg-QmCsnYzCDoYloU6Q?e=D9uT53
 
 Scaffolding based on react-box (React official Truffle box)
 
-* contracts -> ExpenseGroup / ExpenseGroupFactory contracts (Solidity)
-* migrations -> Truffle deployment and migrations
-* test -> ExpenseGroup / ExpenseGroupFactory unit tests (JS)
-* truffle-config.js -> Truffle configuration
+* contracts → ExpenseGroup / ExpenseGroupFactory contracts (Solidity)
+* migrations → Truffle deployment and migrations
+* test → ExpenseGroup / ExpenseGroupFactory unit tests (JS)
+* truffle-config.js → Truffle configuration
 
-* client -> React application (using "Create react app" scaffolding)
-* client/src/common -> Common utils
-* client/src/component -> Presentational React components
-* client/src/container -> Container (and Redux connected) React components
-* client/src/contracts -> Contracts ABI related files
-* client/src/redux -> Redux related files. Using a Redux flavour (IARS) described in: https://medium.com/blockcentric/how-to-structure-react-redux-applications-53906565a61b
+* client → React application (using "Create react app" scaffolding)
+* client/src/common → Common utils
+* client/src/component → Presentational React components
+* client/src/container → Container (and Redux connected) React components
+* client/src/contracts → Contracts ABI related files
+* client/src/redux → Redux related files. Using a Redux flavour (IARS) described in: https://medium.com/blockcentric/how-to-structure-react-redux-applications-53906565a61b
 
 ## Project setup
 
