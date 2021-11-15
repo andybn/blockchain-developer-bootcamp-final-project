@@ -14,3 +14,4 @@
 # Emergency stop pattern (ExpenseGroup)
 
 * Add an option to temporarily stop all contract operations in case of an emergency (due to bugs or security hacks).
+* For this purpose ExpenseGroup contract is inheriting from Pausable abstract contract (Imported from OpenZeppelin)
