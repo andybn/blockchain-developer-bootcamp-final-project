@@ -53,7 +53,7 @@ Web3 dapp development supporting:
 - Add new expenses to a expense group
 - Approve / unapprove expenses
 - Bar chart to track member balances
-- Provide feedback to the user and error handling when transactions are submitted or confirmed
+- Provide feedback to the user and error handling when transactions are submitted or confirmed 3 times
   
 ## MVP+ scope (Future)
 
