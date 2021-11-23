@@ -88,6 +88,9 @@ class BlockchainConnector extends Component {
             <div>
               <span style={{ fontWeight: 'bold' }}> Network: </span> {networkId}
             </div>
+            <div>
+              <span style={{ fontWeight: 'bold' }}> Network: </span> {balance}
+            </div>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={() => window.location.reload(false)}>
