@@ -60,6 +60,9 @@ Web3 dapp development supporting:
 - Add new UI components and interactions to process payments / withdrawals
 - Add new UI component to be able to pause a concrete expense group contract
 - Store descriptions off-chain to save gast costs
+- Link the expense group with the detail using the name (instead of the address which can be confusing).
+- Provide links to blockchain explorers
+- Include the currency unit used
 - Use inheritance / library to reduce contract size and improve maintenance
 - Use hooks and a more modern approach to manage state
 - Add unit tests for React components (Jest)
@@ -67,6 +70,7 @@ Web3 dapp development supporting:
 - Use role access pattern (based on Open Zeppeling) with two roles: member and owner
 - Change to upgradeable contracts 
 - Explore the usage of L2 solutions to reduce gas costs
+
 ## Public hosting
 
 https://godutchsharedexpenses.herokuapp.com/
