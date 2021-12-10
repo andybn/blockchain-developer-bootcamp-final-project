@@ -75,6 +75,10 @@ Web3 dapp development supporting:
 
 https://godutchsharedexpenses.herokuapp.com/
 
+## ETH address for public certification
+
+This is my ETH mainnet address for the on-chain certification: 0xB49390AB57ab1376aCCa68e3fF1BDcD2fF76f7Ac
+
 ## Screencast
 
 https://1drv.ms/u/s!Ap8Pj-xmB5iKg-QmCsnYzCDoYloU6Q?e=D9uT53
